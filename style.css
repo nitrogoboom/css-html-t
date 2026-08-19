@@ -1,55 +1,46 @@
-/* AGENT NOTES
-   - Modern CSS only: clamp(), :has(), oklch(), svh/dvh, subgrid, text-wrap, logical properties. No vendor prefixes.
-   - Tokens are named by purpose, not by size: --gutter/--gap/--stack/--section for space, --font-small/body/lead/heading/display for type.
-     Every gap, padding and rhythm uses one of those (or a calc of one). Don't add a new spacing value; pick the purpose.
-   - Layout primitives (one job each, compose them): .wrapper .flow .grid .cluster .split .sidebar .intro. Components: .card .media .button .eyebrow .more .faq .logos .cta .footer-*.
-   - Class names: one word for primitives; component-role for components (mobile-menu-button, footer-legal). Variants via data-* (data-variant, data-align, data-justify). No BEM.
-   - Layout is capped at --content (1600px) with a gutter that grows with the viewport; sections paint full-bleed; text is capped per element (--measure, 60ch). No media queries inside sections.
-   - Mobile menu uses the Popover API: browser handles toggle, Escape, light dismiss, focus, aria-expanded. Only JS: one-liner in index.html closes it at the desktop breakpoint (CSS can't leave the top layer).
-*/
-
-@view-transition { navigation: auto; }
+/* Modern CSS only: clamp(), :has(), subgrid, anchor positioning, Popover API. Tokens are named by purpose, not size.
+   Primitives (one job each): .wrapper .flow .grid .row .pair .sidebar .intro. Sections paint full-bleed; text is capped per element (60ch).
+   Mobile menu: the browser handles toggle/Escape/light dismiss; the one-liner in index.html closes it at the desktop breakpoint. */
 
 *, *::before, *::after { box-sizing: border-box; }
 
 :root {
-  /* color: greys only for now; --ink-2 is a real color (not opacity) so contrast is testable */
   --ink: #16181d;
-  --ink-2: #5b6070;
+  --ink-2: #5b6070; /* real color, not opacity, so contrast is testable */
   --bg: #fff;
   --bg-2: #f4f5f7;
   --line: #e3e5ea;
   --accent: oklch(45% 0.18 265);
   --motion: 0.25s ease;
 
-  /* spacing: four purposes, all fluid (rem + vw so zoom still works). No scale to memorise — pick by meaning. */
-  --gutter:  clamp(1.5rem, 4vw, 6rem);               /* page edge; grows with the screen so wide monitors never look pinned */
-  --gap:     clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem); /* between siblings: grid cells, cluster items, split columns */
-  --stack:   clamp(1rem, 0.8rem + 1vw, 1.5rem);      /* vertical rhythm inside a block (heading → text → action) */
+  --gutter:  clamp(1rem, 4vw, 6rem);                 /* page edge */
+  --gap:     clamp(1rem, 1.2rem + 1.5vw, 2.25rem);   /* between siblings */
+  --stack:   clamp(1rem, 0.8rem + 1vw, 1.5rem);      /* rhythm inside a block */
   --section: clamp(4rem, 3.2rem + 4vw, 6rem);        /* section padding-block */
 
-  /* type: named by role */
-  --font-small:   0.875rem;
-  --font-body:    clamp(1rem, 0.9rem + 0.35vw, 1.2rem);
-  --font-lead:    clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
-  --font-heading: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem);
-  --font-display: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+  --font-small: 0.875rem;
+  --font-lead:  clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
 
-  --content: 100rem;                   /* layout cap (1600px). Sections paint full-bleed; text is capped per element by --measure */
-  --measure: 65ch;                     /* prose max width */
+  interpolate-size: allow-keywords; /* lets block-size animate to auto */
 }
 
 body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font: var(--font-body)/1.6 system-ui, sans-serif;
+  font: clamp(1rem, 0.9rem + 0.35vw, 1.2rem)/1.6 system-ui, sans-serif;
+  overflow-wrap: anywhere;
 }
 
+img, picture, video, svg { display: block; max-inline-size: 100%; }
 a { color: inherit; text-decoration: none; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-h1, h2, h3, p, figure, blockquote { margin: 0; } /* spacing comes from .flow / gap, not element margins */
-:where(ul:is(.grid, .cluster), nav > ul) { margin: 0; padding: 0; list-style-type: ""; } /* "" not none: Safari keeps list semantics */
+h1, h2, h3, p, figure, blockquote { margin: 0; } /* spacing comes from .flow / gap */
+h1, h2, h3 { line-height: 1.15; text-wrap: balance; }
+h2 { font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem); letter-spacing: -0.02em; }
+h3 { font-size: 1.125rem; }
+p { text-wrap: pretty; }
+ul { margin: 0; padding: 0; list-style-type: ""; } /* "" not none: Safari keeps list semantics */
 
 /* ── header ─────────────────────────────────────── */
 header {
@@ -57,16 +48,14 @@ header {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  height: 3.875rem; /* 62px — trying this per request */
-  padding: 0 var(--gutter);
-  border-bottom: 1px solid var(--line);
+  min-block-size: 3.875rem;
+  padding-inline: var(--gutter);
+  border-block-end: 1px solid var(--line);
 }
 
-.brand { font-size: 1.1em; font-weight: 700; letter-spacing: -0.02em; }
+.brand { white-space: nowrap; font-size: 1.1em; font-weight: 700; letter-spacing: -0.02em; }
 
-/* 8+ links: smaller type than a 3-4 link nav would use.
-   UA [popover] sets position:fixed, inset:0, margin:auto, border, padding, overflow:auto, color:CanvasText, background:Canvas.
-   Reset the ones that show on the desktop inline nav; position and gap are set per breakpoint. */
+/* reset UA [popover] styles that show on the desktop inline nav */
 header nav {
   display: flex;
   align-items: center;
@@ -74,35 +63,33 @@ header nav {
   margin: 0;
   padding: 0;
   border: 0;
-  inset: auto;       /* UA inset:0 would make desktop right:0 interpolable with the mobile slide */
+  inset: auto;
   background: none;
-  color: inherit;    /* UA CanvasText would ignore --ink */
-  overflow: visible; /* UA overflow:auto clips link focus rings */
+  color: inherit;
+  overflow: visible; /* UA overflow:auto clips focus rings */
 }
 header nav a:hover { color: var(--accent); }
 
-/* desktop: hover pill slides between links (CSS anchor positioning; unsupported browsers keep the color hover).
-   No gap + link padding keeps hover contiguous, so the anchor hands off link-to-link and left/width interpolate. */
+/* desktop: hover pill slides between links via anchor positioning; no gap so the anchor hands off link-to-link */
 @media (width >= 64rem) {
   header nav { position: relative; isolation: isolate; }
   header nav a { padding: 0.25rem clamp(0.5rem, 0.75vw, 0.75rem); }
-  /* pill rests on the current page; hovering any other link takes the anchor over, so it slides from there */
-  header nav a:is(:hover, [aria-current="page"]) { anchor-name: --nav-hover; }
-  header nav:has(a:hover) a[aria-current="page"]:not(:hover) { anchor-name: none; }
+  header nav a:is(:hover, :focus-visible, [aria-current="page"]) { anchor-name: --nav-hover; }
+  header nav:has(a:is(:hover, :focus-visible)) a[aria-current="page"]:not(:hover, :focus-visible) { anchor-name: none; } /* hovered link takes the anchor over */
   header nav::before {
     content: "";
     position: absolute;
     position-anchor: --nav-hover;
-    left: anchor(left);
-    top: anchor(top);
-    width: anchor-size(width);
-    height: anchor-size(height);
+    inset-inline-start: anchor(start);
+    inset-block-start: anchor(start);
+    inline-size: anchor-size(inline);
+    block-size: anchor-size(block);
     z-index: -1;
     border-radius: 0.375rem;
     background: var(--line);
-    transition: left var(--motion), width var(--motion), opacity var(--motion);
+    transition: inset-inline-start var(--motion), inline-size var(--motion), opacity var(--motion);
   }
-  header nav:not(:has(a:hover, a[aria-current="page"]))::before { opacity: 0; } /* page with no current link: hide until hover */
+  header nav:not(:has(a:hover, a:focus-visible, a[aria-current="page"]))::before { opacity: 0; }
 }
 
 .mobile-menu-button, .mobile-menu-close, .mobile-menu-fab {
@@ -114,37 +101,35 @@ header nav a:hover { color: var(--accent); }
   cursor: pointer;
 }
 
-/* ── mobile: slide-out ── 64rem breakpoint: keep in sync with index.html script ── */
+/* ── mobile: slide-out. 64rem: keep in sync with index.html ── */
 @media (width < 64rem) {
-  .mobile-menu-button { display: block; padding: 0.5rem; }
-  .mobile-menu-button span, .mobile-menu-fab span,
-  .mobile-menu-button span::before, .mobile-menu-fab span::before,
-  .mobile-menu-button span::after, .mobile-menu-fab span::after {
+  .mobile-menu-button, .mobile-menu-fab { display: grid; place-items: center; min-inline-size: 2.75rem; min-block-size: 2.75rem; } /* 44px hit area */
+  :is(.mobile-menu-button, .mobile-menu-fab) span,
+  :is(.mobile-menu-button, .mobile-menu-fab) span::before,
+  :is(.mobile-menu-button, .mobile-menu-fab) span::after {
     display: block;
-    width: 1.5rem;
-    height: 2px;
+    inline-size: 1.5rem;
+    block-size: 2px;
     background: currentColor;
     content: "";
   }
-  .mobile-menu-button span::before, .mobile-menu-fab span::before { transform: translateY(-0.5rem); }
-  .mobile-menu-button span::after, .mobile-menu-fab span::after { transform: translateY(0.375rem); }
+  :is(.mobile-menu-button, .mobile-menu-fab) span::before { translate: 0 -0.5rem; }
+  :is(.mobile-menu-button, .mobile-menu-fab) span::after { translate: 0 0.375rem; }
 
-  /* floating button, bottom-right — same spot as the ✕ inside the open panel */
+  body { padding-block-end: calc(var(--gutter) + 3rem + var(--stack)); } /* keep the last content clear of the FAB */
+
   .mobile-menu-fab {
-    display: grid;
-    place-items: center;
     position: fixed;
-    right: var(--gutter);
-    bottom: var(--gutter);
-    width: 3rem;
-    height: 3rem;
-    z-index: 1; /* above later position:relative siblings (cards) */
+    inset-inline-end: var(--gutter);
+    inset-block-end: var(--gutter);
+    inline-size: 3rem;
+    block-size: 3rem;
+    z-index: 1; /* above position:relative cards */
     border-radius: 50%;
     background: var(--ink);
     color: var(--bg);
     box-shadow: 0 2px 8px #0004;
-    /* hidden until the header scrolls away; browsers without scroll timelines show it always */
-    animation: mobile-menu-fab-reveal linear both;
+    animation: mobile-menu-fab-reveal linear both; /* hidden until the header scrolls away */
     animation-timeline: scroll();
     animation-range: 0 5rem;
   }
@@ -153,31 +138,28 @@ header nav a:hover { color: var(--accent); }
     to   { opacity: 1; scale: 1; }
   }
 
-  /* closed: popover is display:none. open: slide in from the right */
+  /* closed: display:none. open: slide in from the end edge */
   header nav {
     display: none;
     flex-direction: column;
     align-items: flex-end;
-    /* no justify-content: flex-end — overflow at flex-start is unscrollable (landscape phones). first link margin-top:auto bottom-aligns when there is room, scrolls when not */
     gap: 0.25rem;
     position: fixed;
-    position-anchor: none; /* unverified on S22 whether this or dvh fixed the FAB-open bug; harmless to keep */
-    inset: 0 -100% 0 auto; /* right:-100% parks it off-screen. Slide on right, not translate: desktop right:auto→-100% can't interpolate, so crossing the breakpoint doesn't play the exit slide */
-    height: auto;          /* UA [popover] sets height:fit-content, which wins over inset stretch; auto lets top:0/bottom:0 fill the viewport */
-    width: 75vw;
+    inset-block: 0;
+    inset-inline: auto -100%; /* parked off-screen; inset, not translate, so a breakpoint crossing skips the exit slide */
+    block-size: auto;         /* UA fit-content would beat the inset stretch */
+    inline-size: 75vw;
     overflow-y: auto;
     padding: var(--gap) var(--gutter);
-    /* glass: translucent panel over a blurred page; ::backdrop dims so white-on-white still reads.
-       blur ≤12px keeps iOS fixed-panel scroll smooth; no saturate/border — invisible on an achromatic page. */
-    background: oklch(from var(--bg) l c h / 70%);
+    background: oklch(from var(--bg) l c h / 70%); /* glass; ::backdrop dims the page so white-on-white reads */
     backdrop-filter: blur(0.75rem);
     box-shadow: -1rem 0 3rem #0002;
-    transition: right var(--motion), display var(--motion) allow-discrete, overlay var(--motion) allow-discrete;
+    transition: inset-inline-end var(--motion), display var(--motion) allow-discrete, overlay var(--motion) allow-discrete;
   }
-  header nav:popover-open { display: flex; right: 0; }
-  body:has(header nav:popover-open) { overflow: hidden; } /* popover doesn't lock scroll (dialog does) */
+  header nav:popover-open { display: flex; inset-inline-end: 0; }
+  body:has(header nav:popover-open) { overflow: hidden; } /* popover doesn't lock scroll */
   header nav a { padding: 0.75rem 0; font-size: 1.15em; } /* ~44px tap target */
-  header nav > a:first-child { margin-block-start: auto; }
+  header nav > a:first-child { margin-block-start: auto; } /* bottom-aligns when there is room, scrolls when not */
 
   header nav::backdrop {
     background: #0000;
@@ -185,92 +167,54 @@ header nav a:hover { color: var(--accent); }
   }
   header nav:popover-open::backdrop { background: #0008; }
   @starting-style {
-    header nav:popover-open { right: -100%; }
+    header nav:popover-open { inset-inline-end: -100%; }
     header nav:popover-open::backdrop { background: #0000; }
   }
 
   .mobile-menu-close {
     display: block;
-    margin-top: var(--stack); /* separate from last link so it's not a mis-tap */
+    margin-block-start: var(--stack); /* not a mis-tap from the last link */
     font-size: 2rem;
     line-height: 1;
   }
 }
 
-/* ── layout primitives ──────────────────────────
-   One job each, composable: wrapper (center), flow (rhythm), grid (2-axis equal cells), cluster (1-axis wrap), split (media+text).
-   No media queries: auto-fit/minmax + clamp() do the responsive work. */
+/* ── layout primitives ─────────────────────────── */
 main > section, footer { padding-block: var(--section); }
-main > section + section, footer { border-top: 1px solid var(--line); }
+main > section + section, footer { border-block-start: 1px solid var(--line); }
 
-.wrapper { width: min(100% - 2 * var(--gutter), var(--content)); margin-inline: auto; }
-.narrow  { --content: var(--measure); }
-.flow > * + * { margin-block-start: var(--flow, 1em); }
+.wrapper { inline-size: min(100% - 2 * var(--gutter), 100rem); margin-inline: auto; }
+.flow > * + * { margin-block-start: 1em; }
 
-.grid {
-  display: grid;
-  gap: var(--gap);
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); /* min() stops overflow below 16rem */
-}
-.cluster { display: flex; flex-wrap: wrap; gap: var(--stack) var(--gap); align-items: center; }
-.cluster[data-justify="between"] { justify-content: space-between; }
+.grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+.row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--stack) var(--gap); }
 
-.split {
-  display: grid;
-  gap: calc(var(--gap) * 2);
-  align-items: center;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); /* 2 cols when both fit, else stacked */
-}
-.split > .flow { max-inline-size: 60ch; }
+/* pair: media + text, 50/50, stacks media-first */
+.pair { display: grid; gap: calc(var(--gap) * 2); align-items: center; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+.pair > .flow { max-inline-size: 60ch; }
+.pair.flip > .media { grid-row: 1; grid-column: -2 / -1; } /* last column; the only column when stacked, so media stays first */
 
-/* sidebar: narrow first child (>=16rem), wide second child (>=60%); wraps to a stack when both can't fit */
+/* sidebar: narrow first child, wide second; stacks when both can't fit */
 .sidebar { display: flex; flex-wrap: wrap; gap: calc(var(--gap) * 2); }
 .sidebar > :first-child { flex: 1 1 16rem; }
 .sidebar > :last-child  { flex: 999 1 0; min-inline-size: 60%; }
 
-/* intro: eyebrow + heading + lead that opens a section. Centered by default; data-align="start" beside a sidebar */
+/* intro: eyebrow + heading + lead; centered unless beside a sidebar */
 .intro { display: grid; gap: var(--stack); justify-items: center; text-align: center; max-inline-size: 60ch; margin-inline: auto; }
-.intro[data-align="start"] { justify-items: start; text-align: start; margin-inline: 0; }
-.intro > p:not(.eyebrow) { font-size: var(--font-lead); color: var(--ink-2); text-wrap: pretty; }
-.flow > .intro + * { margin-block-start: calc(var(--gap) * 2); } /* intro -> content: wider than normal flow */
+.sidebar > .intro { justify-items: start; text-align: start; margin-inline: 0; }
+.intro > p:not(.eyebrow) { font-size: var(--font-lead); color: var(--ink-2); }
+.intro > .row { margin-block-start: var(--stack); } /* CTA row sits a little further off the text */
+.flow > .intro + * { margin-block-start: calc(var(--gap) * 2); }
 
 .visually-hidden { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-/* even split sections (counting only sections that hold a split) put media in the last column.
-   Negative grid line: last column when there are two, the only column when stacked — so media stays first and text stays left. */
-main > :nth-child(even of :has(> .split)) .split > .media { grid-column: -2 / -1; }
 
 /* ── content ────────────────────────────────────── */
-.hero {
-  display: grid;
-  justify-items: center;
-  text-align: center;
-  align-content: center;
-  gap: var(--stack);
-  min-height: min(80svh, 52rem);   /* not 100svh: a peek of the next section is the scroll cue */
-  padding: var(--section) var(--gutter);
-}
-.hero h1 {
-  max-inline-size: 20ch;
-  font-size: var(--font-display);
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  text-wrap: balance;
-}
-.hero p {
-  max-inline-size: 50ch;
-  font-size: var(--font-lead);
-  color: var(--ink-2);
-  text-wrap: pretty;
-}
-.hero .cluster { margin-top: var(--stack); justify-content: center; } /* CTA row: gap below h1 < gap above CTAs */
-
-h2 { font-size: var(--font-heading); line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; }
-h3 { font-size: 1.125rem; }
+.hero { display: grid; align-content: center; min-block-size: min(80svh, 52rem); padding: var(--section) var(--gutter); } /* not 100svh: a peek of the next section is the scroll cue */
+.hero h1 { max-inline-size: 20ch; font-size: clamp(2.5rem, 1.5rem + 4vw, 4.5rem); line-height: 1.05; letter-spacing: -0.03em; }
 
 .button {
   display: inline-block;
-  min-height: 44px;              /* WCAG 2.5.8 target size */
-  padding: 0.75em 1.5em;
+  padding: 0.75em 1.5em; /* ≥44px tall at body size */
   border-radius: 0.375rem;
   background: var(--ink);
   color: var(--bg);
@@ -285,7 +229,7 @@ h3 { font-size: 1.125rem; }
 .more { font-weight: 600; color: var(--accent); }
 .more:hover { text-decoration: underline; }
 
-.media { /* placeholder box; swap for <img>/<video> and keep the frame */
+.media { /* placeholder box; swap for <img>/<video>, keep the frame */
   aspect-ratio: 16 / 10;
   border: 1px solid var(--line);
   border-radius: 0.75rem;
@@ -293,14 +237,14 @@ h3 { font-size: 1.125rem; }
   box-shadow: 0 1rem 2rem -1rem #0002;
 }
 
-.logos { padding-block: calc(var(--section) / 2); text-align: center; color: var(--ink-2); }
-.logos h2 { font-size: var(--font-small); font-weight: 500; letter-spacing: 0; margin-bottom: var(--stack); }
-.logos .cluster { justify-content: center; font-weight: 700; font-size: 1.25rem; letter-spacing: -0.02em; } /* wordmark stand-ins */
+.logos { padding: calc(var(--section) / 2) var(--gutter); text-align: center; color: var(--ink-2); }
+.logos h2 { font-size: var(--font-small); font-weight: 500; letter-spacing: 0; margin-block-end: var(--stack); }
+.logos ul { font-weight: 700; font-size: 1.25rem; letter-spacing: -0.02em; } /* wordmark stand-ins */
 
 .card {
   position: relative;            /* anchors the stretched link */
   display: grid;
-  grid-row: span 3;              /* ponytail: 3 = title/body/action; subgrid aligns those rows across siblings */
+  grid-row: span 3;              /* title/body/action; subgrid aligns them across siblings */
   grid-template-rows: subgrid;
   gap: var(--stack);
   padding: var(--gap);
@@ -309,24 +253,22 @@ h3 { font-size: 1.125rem; }
   transition: border-color var(--motion);
 }
 .card:hover { border-color: var(--ink-2); }
-.card p { color: var(--ink-2); }
+.card > p { color: var(--ink-2); }
 .card > a { align-self: end; }
-.card > a::after { content: ""; position: absolute; inset: 0; } /* whole card clickable; the link stays the only focusable */
+.card > a::after { content: ""; position: absolute; inset: 0; } /* whole card clickable */
 .card > a:focus-visible { outline: none; }
-.card:has(> a:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; } /* ring the whole card, since the whole card is the target */
-.card > figure { display: contents; } /* blockquote + figcaption become the card's subgrid rows */
-.card blockquote p { color: var(--ink); }
+.card:has(> a:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; } /* ring the whole card instead */
+.card > figure { display: contents; } /* blockquote + figcaption become the subgrid rows */
 figcaption { font-size: var(--font-small); color: var(--ink-2); }
 figcaption strong { display: block; color: var(--ink); }
 
-.faq details { border-block-end: 1px solid var(--line); max-inline-size: var(--measure); }
+.faq details { border-block-end: 1px solid var(--line); max-inline-size: 60ch; }
 .faq details:first-child { border-block-start: 1px solid var(--line); }
 .faq summary {
   display: flex; justify-content: space-between; gap: var(--gap); align-items: center;
   padding-block: var(--stack);
-  font-weight: 600; cursor: pointer; list-style: none; /* drops the default marker */
+  font-weight: 600; cursor: pointer; list-style: none;
 }
-.faq summary::-webkit-details-marker { display: none; } /* Safari */
 .faq summary::after { content: "+"; font-size: 1.5em; line-height: 1; color: var(--ink-2); transition: rotate var(--motion); }
 .faq details[open] summary::after { rotate: 45deg; }
 .faq summary:hover { color: var(--accent); }
@@ -336,17 +278,15 @@ figcaption strong { display: block; color: var(--ink); }
   transition: block-size var(--motion), content-visibility var(--motion) allow-discrete;
 }
 .faq details[open]::details-content { block-size: auto; content-visibility: visible; }
-.faq details { interpolate-size: allow-keywords; } /* lets block-size animate to auto (Chromium) */
 
 .cta { background: var(--bg-2); }
 .cta small { color: var(--ink-2); }
 
 footer { font-size: var(--font-small); }
-.footer-columns { display: flex; flex-wrap: wrap; gap: calc(var(--gap) * 2) calc(var(--gap) * 2); }
-.footer-columns > :first-child { flex: 1 1 16rem; max-inline-size: 28ch; color: var(--ink-2); } /* brand column */
-.footer-links { flex: 3 1 28rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: calc(var(--gap) * 2) var(--gap); } /* 2x2 on phones */
-@media (min-width: 40rem) { .footer-links { grid-template-columns: repeat(4, 1fr); } }
+footer .sidebar > :first-child { max-inline-size: 28ch; color: var(--ink-2); } /* brand column */
+.footer-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: calc(var(--gap) * 2) var(--gap); }
+@media (width >= 40rem) { .footer-links { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 footer h2 { font-size: var(--font-small); letter-spacing: 0; color: var(--ink); margin-block-end: var(--stack); }
-footer nav ul { display: grid; gap: calc(var(--stack) / 2); color: var(--ink-2); }
+.footer-links ul { display: grid; gap: calc(var(--stack) / 2); color: var(--ink-2); }
 footer a:hover { color: var(--accent); }
-.footer-legal { margin-block-start: calc(var(--gap) * 2); padding-block-start: var(--gap); border-block-start: 1px solid var(--line); color: var(--ink-2); }
+.footer-legal { justify-content: space-between; margin-block-start: calc(var(--gap) * 2); padding-block-start: var(--gap); border-block-start: 1px solid var(--line); color: var(--ink-2); }
