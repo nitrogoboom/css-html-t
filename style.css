@@ -158,7 +158,7 @@ header nav a:hover { color: var(--accent); }
     display: none;
     flex-direction: column;
     align-items: flex-end;
-    justify-content: flex-end;
+    /* no justify-content: flex-end — overflow at flex-start is unscrollable (landscape phones). first link margin-top:auto bottom-aligns when there is room, scrolls when not */
     gap: 0.25rem;
     position: fixed;
     position-anchor: none; /* unverified on S22 whether this or dvh fixed the FAB-open bug; harmless to keep */
@@ -177,6 +177,7 @@ header nav a:hover { color: var(--accent); }
   header nav:popover-open { display: flex; right: 0; }
   body:has(header nav:popover-open) { overflow: hidden; } /* popover doesn't lock scroll (dialog does) */
   header nav a { padding: 0.75rem 0; font-size: 1.15em; } /* ~44px tap target */
+  header nav > a:first-child { margin-block-start: auto; }
 
   header nav::backdrop {
     background: #0000;
