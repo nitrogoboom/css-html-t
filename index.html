@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Lorem — Company Name</title>
+<meta name="description" content="Company Name designs and builds fast, accessible websites for small businesses and independent professionals.">
+<link rel="canonical" href="https://example.com/">
+
+<!-- Social sharing (FB, LinkedIn, iMessage, Slack); X falls back to og:* -->
+<meta property="og:title" content="Lorem — Company Name">
+<meta property="og:description" content="Company Name designs and builds fast, accessible websites for small businesses and independent professionals.">
+<meta property="og:image" content="https://example.com/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Company Name wordmark on a plain background.">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- Icons -->
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"><!-- 180x180 -->
+
+<link rel="stylesheet" href="style.css">
+
+<!-- LocalBusiness structured data — Google requires image + address for the rich result. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Company Name",
+  "url": "https://example.com/",
+  "image": "https://example.com/og.jpg",
+  "logo": "https://example.com/icon.svg",
+  "telephone": "555-555-5555",
+  "email": "hello@example.com",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "123 Main Street",
+    "addressLocality": "Anytown",
+    "addressRegion": "ON",
+    "postalCode": "A1A 1A1",
+    "addressCountry": "CA"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 43.6532,
+    "longitude": -79.3832
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "09:00",
+      "closes": "17:00"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="#">Lorem</a>
+
+  <button type="button" class="mobile-menu-button" popovertarget="mobile-menu" aria-label="Menu"><span></span></button>
+
+  <nav id="mobile-menu" popover aria-label="Main">
+    <a href="#" aria-current="page">Ipsum</a>
+    <a href="#">Dolor</a>
+    <a href="#">Sit Amet</a>
+    <a href="#">Consectetur</a>
+    <a href="#">Adipiscing</a>
+    <a href="#">Eiusmod</a>
+    <a href="#">Tempor</a>
+    <a href="#">Incididunt</a>
+    <button type="button" class="mobile-menu-close" popovertarget="mobile-menu" popovertargetaction="hide" aria-label="Close">&times;</button>
+  </nav>
+</header>
+<button type="button" class="mobile-menu-fab" popovertarget="mobile-menu" aria-label="Menu"><span></span></button>
+
+<main>
+  <!-- hero: centered stack, h1 ≤ 8 words, lead ≤ 20 words, primary + ghost CTA -->
+  <section class="hero" aria-labelledby="hero-title">
+    <h1 id="hero-title">Hero section</h1>
+    <p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <div class="cluster">
+      <a class="button" href="#">Lorem ipsum</a>
+      <a class="button" data-variant="ghost" href="#">Dolor sit</a>
+    </div>
+  </section>
+
+  <!-- logos: label + one muted row, wraps centered. Placeholder wordmarks are text; swap each <li> for <img alt="Name" width height> -->
+  <section class="logos" aria-labelledby="logos-title">
+    <h2 id="logos-title">Logo strip &middot; trusted by</h2>
+    <ul class="cluster">
+      <li>Lorem</li><li>Ipsum</li><li>Dolor</li><li>Sit Amet</li><li>Consectetur</li><li>Adipiscing</li>
+    </ul>
+  </section>
+
+  <!-- split: media + text, 50/50, stacks media-first. Even splits (counting only split sections) put media on the right. -->
+  <section aria-labelledby="split-1-title">
+    <div class="wrapper split">
+      <div class="media" aria-hidden="true"></div>
+      <div class="flow">
+        <p class="eyebrow">Eyebrow</p>
+        <h2 id="split-1-title">Split section, media left</h2>
+        <p>Incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+        <a class="more" href="#">Learn more about split 1 &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="split-2-title">
+    <div class="wrapper split">
+      <div class="media" aria-hidden="true"></div>
+      <div class="flow">
+        <p class="eyebrow">Eyebrow</p>
+        <h2 id="split-2-title">Split section, media right</h2>
+        <p>In reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat.</p>
+        <a class="more" href="#">Learn more about split 2 &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- feature cards: centered intro, then equal cards; subgrid aligns title/body/link rows; whole card is the link's hit area -->
+  <section aria-labelledby="features-title">
+    <div class="wrapper flow">
+      <div class="intro">
+        <p class="eyebrow">Eyebrow</p>
+        <h2 id="features-title">Feature cards</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+      </div>
+      <ul class="grid">
+        <li class="card">
+          <h3>Card one</h3>
+          <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          <a class="more" href="#">Learn more<span class="visually-hidden"> about card one</span> &rarr;</a>
+        </li>
+        <li class="card">
+          <h3>Card two</h3>
+          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+          <a class="more" href="#">Learn more<span class="visually-hidden"> about card two</span> &rarr;</a>
+        </li>
+        <li class="card">
+          <h3>Card three</h3>
+          <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.</p>
+          <a class="more" href="#">Learn more<span class="visually-hidden"> about card three</span> &rarr;</a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- testimonials: same grid + card; figure/blockquote/figcaption; attribution outside the quote, no <cite> for people -->
+  <section aria-labelledby="testimonials-title">
+    <div class="wrapper flow">
+      <div class="intro">
+        <p class="eyebrow">Eyebrow</p>
+        <h2 id="testimonials-title">Testimonials</h2>
+      </div>
+      <ul class="grid">
+        <li class="card">
+          <figure>
+            <blockquote><p>Mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium.</p></blockquote>
+            <figcaption><strong>Lorem Ipsum</strong> Dolor, Sit Amet Inc.</figcaption>
+          </figure>
+        </li>
+        <li class="card">
+          <figure>
+            <blockquote><p>Accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore.</p></blockquote>
+            <figcaption><strong>Sit Amet</strong> Consectetur, Adipiscing Ltd.</figcaption>
+          </figure>
+        </li>
+        <li class="card">
+          <figure>
+            <blockquote><p>Inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p></blockquote>
+            <figcaption><strong>Adipiscing Elit</strong> Eiusmod, Tempor Co.</figcaption>
+          </figure>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- faq: intro left, questions right (sidebar layout, stacks when narrow); native details, all closed, no heading inside summary -->
+  <section aria-labelledby="faq-title">
+    <div class="wrapper sidebar">
+      <div class="intro" data-align="start">
+        <p class="eyebrow">Eyebrow</p>
+        <h2 id="faq-title">FAQ</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      </div>
+      <div class="faq">
+        <details><summary>Question one: voluptatem quia voluptas sit aspernatur?</summary><p>Aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p></details>
+        <details><summary>Question two: neque porro quisquam est?</summary><p>Qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora.</p></details>
+        <details><summary>Question three: ut labore et dolore magnam aliquam?</summary><p>Quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit.</p></details>
+        <details><summary>Question four: quis autem vel eum iure?</summary><p>Reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- call to action: centered stack on a tinted band; one primary, one ghost, one risk-reducer line -->
+  <section class="cta" aria-labelledby="cta-title">
+    <div class="wrapper intro">
+      <h2 id="cta-title">Call to action</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      <div class="cluster">
+        <a class="button" href="#">Lorem ipsum</a>
+        <a class="button" data-variant="ghost" href="#">Dolor sit</a>
+      </div>
+      <p><small>No credit card required.</small></p>
+    </div>
+  </section>
+</main>
+
+<!-- footer: brand column (wider) + link columns, wraps to 2-up on phones; legal row under a hairline -->
+<footer>
+  <div class="wrapper">
+    <div class="footer-columns">
+      <div class="flow">
+        <a class="brand" href="#">Lorem</a>
+        <p>Footer brand column. One-line tagline about the company.</p>
+      </div>
+      <nav aria-label="Footer column one">
+        <h2>Column one</h2>
+        <ul><li><a href="#">Ipsum</a></li><li><a href="#">Dolor</a></li><li><a href="#">Sit Amet</a></li></ul>
+      </nav>
+      <nav aria-label="Footer column two">
+        <h2>Column two</h2>
+        <ul><li><a href="#">Adipiscing</a></li><li><a href="#">Elit</a></li><li><a href="#">Sed Do</a></li></ul>
+      </nav>
+      <nav aria-label="Footer column three">
+        <h2>Column three</h2>
+        <ul><li><a href="#">Tempor</a></li><li><a href="#">Incididunt</a></li><li><a href="#">Ut Labore</a></li></ul>
+      </nav>
+      <nav aria-label="Footer column four">
+        <h2>Column four</h2>
+        <ul><li><a href="#">Magna</a></li><li><a href="#">Aliqua</a></li><li><a href="#">Enim</a></li></ul>
+      </nav>
+    </div>
+    <div class="footer-legal cluster" data-justify="between">
+      <small>&copy; 2026 Company Name</small>
+      <ul class="cluster"><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul>
+    </div>
+  </div>
+</footer>
+
+<!-- close the mobile popover when the viewport grows to desktop; CSS can't leave the top layer. 64rem: keep in sync with style.css -->
+<script>matchMedia('(width >= 64rem)').addEventListener('change', e => e.matches && document.getElementById('mobile-menu').hidePopover())</script>
+</body>
+</html>
