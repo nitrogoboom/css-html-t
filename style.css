@@ -49,7 +49,7 @@ body {
 a { color: inherit; text-decoration: none; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 h1, h2, h3, p, figure, blockquote { margin: 0; } /* spacing comes from .flow / gap, not element margins */
-:where(ul:is(.grid, .cluster), nav ul) { margin: 0; padding: 0; list-style-type: ""; } /* "" not none: Safari keeps list semantics */
+:where(ul:is(.grid, .cluster), nav > ul) { margin: 0; padding: 0; list-style-type: ""; } /* "" not none: Safari keeps list semantics */
 
 /* ── header ─────────────────────────────────────── */
 header {
@@ -134,10 +134,11 @@ header nav a:hover { color: var(--accent); }
     display: grid;
     place-items: center;
     position: fixed;
-    right: 1rem;
-    bottom: 1rem;
+    right: var(--gutter);
+    bottom: var(--gutter);
     width: 3rem;
     height: 3rem;
+    z-index: 1; /* above later position:relative siblings (cards) */
     border-radius: 50%;
     background: var(--ink);
     color: var(--bg);
@@ -165,7 +166,7 @@ header nav a:hover { color: var(--accent); }
     height: auto;          /* UA [popover] sets height:fit-content, which wins over inset stretch; auto lets top:0/bottom:0 fill the viewport */
     width: 75vw;
     overflow-y: auto;
-    padding: 1.5rem var(--gutter) 2rem;
+    padding: var(--gap) var(--gutter);
     /* glass: translucent panel over a blurred page; ::backdrop dims so white-on-white still reads.
        blur ≤12px keeps iOS fixed-panel scroll smooth; no saturate/border — invisible on an achromatic page. */
     background: oklch(from var(--bg) l c h / 70%);
@@ -189,7 +190,7 @@ header nav a:hover { color: var(--accent); }
 
   .mobile-menu-close {
     display: block;
-    margin-top: 1rem; /* separate from last link so it's not a mis-tap */
+    margin-top: var(--stack); /* separate from last link so it's not a mis-tap */
     font-size: 2rem;
     line-height: 1;
   }
@@ -233,10 +234,9 @@ main > section + section, footer { border-top: 1px solid var(--line); }
 .flow > .intro + * { margin-block-start: calc(var(--gap) * 2); } /* intro -> content: wider than normal flow */
 
 .visually-hidden { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-/* even split sections (counting only sections that hold a split) put media on the right.
-   direction:rtl flips grid column order without touching stacked order (media stays first); children reset to ltr. */
-main > :nth-child(even of :has(> .split)) .split { direction: rtl; }
-.split > * { direction: ltr; }
+/* even split sections (counting only sections that hold a split) put media in the last column.
+   Negative grid line: last column when there are two, the only column when stacked — so media stays first and text stays left. */
+main > :nth-child(even of :has(> .split)) .split > .media { grid-column: -2 / -1; }
 
 /* ── content ────────────────────────────────────── */
 .hero {
@@ -311,6 +311,8 @@ h3 { font-size: 1.125rem; }
 .card p { color: var(--ink-2); }
 .card > a { align-self: end; }
 .card > a::after { content: ""; position: absolute; inset: 0; } /* whole card clickable; the link stays the only focusable */
+.card > a:focus-visible { outline: none; }
+.card:has(> a:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; } /* ring the whole card, since the whole card is the target */
 .card > figure { display: contents; } /* blockquote + figcaption become the card's subgrid rows */
 .card blockquote p { color: var(--ink); }
 figcaption { font-size: var(--font-small); color: var(--ink-2); }
