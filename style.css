@@ -342,10 +342,11 @@ figcaption strong { display: block; color: var(--ink); }
 .cta small { color: var(--ink-2); }
 
 footer { font-size: var(--font-small); }
-.footer-columns { display: flex; flex-wrap: wrap; gap: calc(var(--gap) * 2) var(--gap); }
-.footer-columns > :first-child { flex: 2 1 16rem; max-inline-size: 20rem; color: var(--ink-2); } /* brand column, wider */
-.footer-columns > nav { flex: 1 1 8rem; }                                                          /* 2-up on phones */
-footer h2 { font-size: var(--font-small); letter-spacing: 0; margin-block-end: var(--stack); }
+.footer-columns { display: flex; flex-wrap: wrap; gap: calc(var(--gap) * 2) calc(var(--gap) * 2); }
+.footer-columns > :first-child { flex: 1 1 16rem; max-inline-size: 28ch; color: var(--ink-2); } /* brand column */
+.footer-links { flex: 3 1 28rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: calc(var(--gap) * 2) var(--gap); } /* 2x2 on phones */
+@media (min-width: 40rem) { .footer-links { grid-template-columns: repeat(4, 1fr); } }
+footer h2 { font-size: var(--font-small); letter-spacing: 0; color: var(--ink); margin-block-end: var(--stack); }
 footer nav ul { display: grid; gap: calc(var(--stack) / 2); color: var(--ink-2); }
 footer a:hover { color: var(--accent); }
 .footer-legal { margin-block-start: calc(var(--gap) * 2); padding-block-start: var(--gap); border-block-start: 1px solid var(--line); color: var(--ink-2); }
