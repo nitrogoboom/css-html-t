@@ -9,7 +9,7 @@
   --ink-2: #5b6070; /* real color, not opacity, so contrast is testable */
   --bg: #fff;
   --bg-2: #f4f5f7;
-  --line: #e3e5ea;
+  --line: #9aa0ad; /* dark enough to survive washed-out screens */
   --accent: oklch(45% 0.18 265);
   --motion: 0.25s ease;
   --radius-sm: 0.375rem;
@@ -295,6 +295,6 @@ footer { font-size: var(--font-small); }
 footer .sidebar > :first-child { max-inline-size: 28ch; color: var(--ink-2); } /* brand column */
 .footer-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: calc(var(--gap) * 2) var(--gap); }
 @media (width >= 40rem) { .footer-links { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-footer h2 { font-size: var(--font-small); letter-spacing: 0; color: var(--ink); margin-block-end: var(--stack); }
+footer h3 { font-size: var(--font-small); letter-spacing: 0; color: var(--ink); margin-block-end: var(--stack); }
 .footer-links ul { display: grid; gap: calc(var(--stack) / 2); color: var(--ink-2); }
 .footer-legal { justify-content: space-between; margin-block-start: calc(var(--gap) * 2); padding-block-start: var(--gap); border-block-start: 1px solid var(--line); color: var(--ink-2); }
