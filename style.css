@@ -6,6 +6,11 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* big-screen scaling: flat 100% up to 1280px, then the whole rem-based layout grows; 125% at 2560, 150% cap at 3840.
+   rem/% here resolve against the user's base size, so browser font settings and zoom still work.
+   Component clamps below keep handling the 320→1370px ramp; this rule owns everything wider. */
+html { font-size: clamp(100%, 0.75rem + 0.3125vw, 150%); }
+
 :root {
   --ink: #16181d;
   --ink-muted: #5b6070; /* secondary text; real color, not opacity, so contrast is testable */
