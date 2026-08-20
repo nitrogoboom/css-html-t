@@ -1,44 +1,45 @@
-/* Modern CSS only: clamp(), :has(), subgrid, anchor positioning, Popover API.
-   Primitives (one job each): .wrapper .flow .grid .row .pair .sidebar .intro. Sections paint full-bleed; text is capped per element (60ch).
-   Knobs: primitives state defaults as custom properties (--row-justify, --row-align, --grid-cols, --grid-min, --pair-min, --sidebar-narrow, --sidebar-wide-min, --intro-align, --flow-space);
-   override per instance via the style attribute. An override that repeats earns a modifier class (.media-end); data-variant is only for enumerated component styles (.button).
-   Naming: names state purpose, never a rank or size suffix (--ink-muted, not --ink-2); a token paints only what its name says.
-   Format: one space after colons, no column alignment; a rule collapses to one line only when short; banners are label-only at one width.
-   Mobile menu: the browser handles toggle/Escape/light dismiss; menu.js closes it at the desktop breakpoint. */
+/* This stylesheet uses modern CSS only: clamp(), :has(), subgrid, anchor positioning, and the Popover API.
+   Layout primitives, one job each: .wrapper .flow .grid .row .pair .sidebar .intro. Sections stretch edge to edge; text lines are capped at 60ch on each text element.
+   Tuning: each primitive sets its defaults as custom properties (--row-justify, --row-align, --grid-cols, --grid-min, --pair-min, --sidebar-narrow, --sidebar-wide-min, --intro-align, --flow-space).
+   Override one instance with an inline style attribute. If you repeat the same override, turn it into a modifier class (like .media-end). Use data-variant only for a fixed set of component looks (like .button).
+   Naming: a name says what the thing is for, never a rank or size (--ink-muted, not --ink-2). A custom property only styles what its name says.
+   Format: one space after each colon, no column alignment. A rule goes on one line only when it's short. Section banners are a label only, all the same width.
+   Mobile menu: the browser handles open, close, Escape, and click-outside. menu.js only closes the menu when the window grows to desktop size. */
 
 *, *::before, *::after { box-sizing: border-box; }
 
-/* big-screen scaling: flat 100% up to 1280px, then the whole rem-based layout grows; 125% at 2560, 150% cap at 3840.
-   rem/% here resolve against the user's base size, so browser font settings and zoom still work.
-   Component clamps below keep handling the 320→1370px ramp; this rule owns everything wider. */
+/* Big-screen scaling. Font size stays at 100% up to a 1280px-wide window. Past that, the root font size grows,
+   so the whole rem-based layout grows with it: 125% at 2560px, capped at 150% at 3840px.
+   The rem and % values here come from the user's browser font setting, so their settings and zoom still work.
+   The clamp() values on individual elements handle 320px to 1370px. This rule handles everything wider. */
 html { font-size: clamp(100%, 0.75rem + 0.3125vw, 150%); }
-@media (min-device-width: 3000px) { /* 4K-class panel at ~100% OS scaling: raise the floor so small windows stay physically legible. device-width is the screen, not the window; scaled monitors report <3000 and opt out. Deprecated query, but MQ spec mandates support. */
+@media (min-device-width: 3000px) { /* A 4K screen at 100% OS scaling makes text tiny. Raise the minimum so small windows stay readable. device-width measures the screen, not the window. Scaled monitors report under 3000px, so they skip this. The query is deprecated, but the spec says browsers must keep supporting it. */
   html { font-size: clamp(125%, 0.75rem + 0.3125vw, 150%); }
 }
-@media print { html { font-size: 100%; } } /* Firefox inflates vw by print DPI (bug 1622017) */
+@media print { html { font-size: 100%; } } /* Firefox makes vw units huge when printing (bug 1622017), so use a plain size for print. */
 
 :root {
   --ink: #16181d;
-  --ink-muted: #5b6070; /* secondary text; real color, not opacity, so contrast is testable */
+  --ink-muted: #5b6070; /* Gray for secondary text. */
   --bg: #f8fafc;
   --bg-tint: #f4f5f7;
-  --line: #9aa0ad; /* hairlines; dark enough to survive washed-out screens */
-  --nav-pill: var(--line); /* desktop nav hover pill fill; reuses the hairline gray on purpose */
-  --accent: #0047ab; /* cobalt; placeholder accent: button/link hovers, focus ring */
+  --line: #9aa0ad; /* Thin border lines. Dark enough to stay visible on washed-out screens. */
+  --nav-pill: var(--line); /* Fill for the desktop nav hover pill. Reuses the border gray on purpose. */
+  --accent: #0047ab; /* Cobalt blue. Placeholder accent for button hovers, link hovers, and the focus ring. */
   --motion: 0.25s ease;
   --radius-sm: 0.375rem;
   --radius-lg: 0.75rem;
-  --shadow-sm: 0 1px 2px #0003, 0 4px 12px #0004; /* contact + ambient; a single soft shadow bands on cheap panels */
+  --shadow-sm: 0 1px 2px #0003, 0 4px 12px #0004; /* A tight shadow plus a soft one. One soft shadow alone shows banding on cheap screens. */
   --shadow-lg: 0 1px 2px #0002, 0 1rem 2rem -1rem #0003;
 
-  --gutter: clamp(1rem, 4vw, 6rem); /* page edge */
-  --gap: min(1.2rem + 1.5vw, 2.25rem); /* between siblings; clamp's floor was dead (preferred ≥ 1.2rem always) */
-  --stack: clamp(1rem, 0.8rem + 1vw, 1.5rem); /* rhythm inside a block */
-  --section-pad: clamp(4rem, 3.2rem + 4vw, 6rem); /* section padding-block */
+  --gutter: clamp(1rem, 4vw, 6rem); /* Space between content and the page edge. */
+  --gap: min(1.2rem + 1.5vw, 2.25rem); /* Space between siblings. min() not clamp(): the old clamp() minimum never applied because 1.2rem + 1.5vw is always at least 1.2rem. */
+  --stack: clamp(1rem, 0.8rem + 1vw, 1.5rem); /* Vertical spacing inside a block. */
+  --section-pad: clamp(4rem, 3.2rem + 4vw, 6rem); /* Top and bottom padding on each section. */
 
   --font-small: 0.875rem;
 
-  interpolate-size: allow-keywords; /* lets block-size animate to auto */
+  interpolate-size: allow-keywords; /* Lets height animate to auto (used by the FAQ open animation). */
 }
 
 body {
@@ -51,27 +52,27 @@ body {
 
 img, picture, video, svg { display: block; max-inline-size: 100%; }
 a { color: inherit; text-decoration: none; }
-:focus-visible { outline: 0.125rem solid var(--accent); outline-offset: 0.125rem; } /* rem so rings scale with the big-screen root ramp */
-h1, h2, h3, p, figure, blockquote { margin: 0; } /* spacing comes from .flow / gap */
+:focus-visible { outline: 0.125rem solid var(--accent); outline-offset: 0.125rem; } /* rem, not px, so the focus ring grows with the big-screen scaling. */
+h1, h2, h3, p, figure, blockquote { margin: 0; } /* No default margins. Spacing comes from .flow and gap instead. */
 h1, h2, h3 { line-height: 1.15; text-wrap: balance; }
-h1 { font-size: clamp(2rem, 1.5rem + 2vw, 3rem); letter-spacing: -0.02em; } /* inner-page title band; .hero h1 overrides with the display size */
+h1 { font-size: clamp(2rem, 1.5rem + 2vw, 3rem); letter-spacing: -0.02em; } /* Title size for inner pages. The homepage hero overrides this with a bigger size. */
 h2 { font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem); letter-spacing: -0.02em; }
 h3 { font-size: 1.125rem; }
 p { text-wrap: pretty; }
-ul { margin: 0; padding: 0; list-style-type: ""; } /* "" not none: Safari keeps list semantics */
+ul { margin: 0; padding: 0; list-style-type: ""; } /* Empty string, not none: with none, Safari stops announcing these as lists to screen readers. */
 address { font-style: normal; }
 
 .skip-link {
   position: absolute;
   inset-block-start: 0;
   inset-inline-start: var(--gutter);
-  z-index: 2; /* above the FAB */
+  z-index: 2; /* Above the floating menu button. */
   padding: 0.5rem 1rem;
   border-radius: 0 0 var(--radius-sm) var(--radius-sm);
   background: var(--ink);
   color: var(--bg);
   font-weight: 600;
-  translate: 0 -150%; /* parked above the viewport until keyboard focus */
+  translate: 0 -150%; /* Hidden above the screen until it gets keyboard focus. */
   transition: translate var(--motion);
 }
 .skip-link:focus-visible { translate: 0 0; }
@@ -89,8 +90,9 @@ header {
 
 .brand { white-space: nowrap; font-size: 1.1em; font-weight: 700; letter-spacing: -0.02em; }
 
-/* one nav, two roles: mobile popover + desktop inline nav. display:flex overrides the UA
-   [popover]{display:none}, so desktop visibility depends on this stylesheet loading. */
+/* One nav element with two jobs: a slide-in popover on mobile, a plain inline nav on desktop.
+   display: flex overrides the browser's default [popover] { display: none }, so on desktop
+   the nav only shows if this stylesheet loads. */
 header nav {
   display: flex;
   align-items: center;
@@ -101,17 +103,18 @@ header nav {
   inset: auto;
   background: none;
   color: inherit;
-  overflow: visible; /* UA overflow:auto clips focus rings */
+  overflow: visible; /* The browser's default overflow: auto on popovers cuts off focus rings. */
 }
 header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
 
-/* desktop: hover pill slides between links via anchor positioning; no gap so the anchor hands off link-to-link */
+/* Desktop nav: a gray pill slides from link to link on hover, using anchor positioning.
+   No gap between links, so the pill can hand off smoothly from one link to the next. */
 @media (width >= 64rem) {
   header nav { position: relative; isolation: isolate; }
   header nav a { padding: 0.25rem clamp(0.5rem, 0.75vw, 0.75rem); }
-  @supports (anchor-name: --x) { /* no support: links still get the color hover; no stray pill box */
+  @supports (anchor-name: --x) { /* Browsers without anchor positioning still get the color change on hover, and no leftover pill box. */
     header nav a:is(:hover, :focus-visible, [aria-current="page"]) { anchor-name: --nav-hover; }
-    header nav:has(a:is(:hover, :focus-visible)) a[aria-current="page"]:not(:hover, :focus-visible) { anchor-name: none; } /* hovered link takes the anchor over */
+    header nav:has(a:is(:hover, :focus-visible)) a[aria-current="page"]:not(:hover, :focus-visible) { anchor-name: none; } /* While you hover any link, the current-page link gives up the pill. */
     header nav::before {
       content: "";
       position: absolute;
@@ -139,21 +142,21 @@ header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
 }
 
 /* ── mobile menu ──────────────────────────────────── */
-@media (width < 64rem) { /* 64rem: keep in sync with index.html */
-  .mobile-menu-button, .mobile-menu-fab { display: grid; place-items: center; min-inline-size: 2.75rem; min-block-size: 2.75rem; } /* 44px hit area */
+@media (width < 64rem) { /* 64rem: menu.js in index.html uses the same number. Change both together. */
+  .mobile-menu-button, .mobile-menu-fab { display: grid; place-items: center; min-inline-size: 2.75rem; min-block-size: 2.75rem; } /* 44px minimum tap target. */
   :is(.mobile-menu-button, .mobile-menu-fab) span,
   :is(.mobile-menu-button, .mobile-menu-fab) span::before,
   :is(.mobile-menu-button, .mobile-menu-fab) span::after {
     display: block;
     inline-size: 1.5rem;
-    block-size: 0.125rem; /* rem so bar thickness scales with the big-screen root ramp like the rest of the icon */
+    block-size: 0.125rem; /* rem, not px, so the bar thickness grows with the big-screen scaling like the rest of the icon. */
     background: currentColor;
     content: "";
   }
   :is(.mobile-menu-button, .mobile-menu-fab) span::before { translate: 0 -0.5rem; }
   :is(.mobile-menu-button, .mobile-menu-fab) span::after { translate: 0 0.375rem; }
 
-  body { padding-block-end: calc(var(--gutter) + 3rem + var(--stack)); } /* keep the last content clear of the FAB */
+  body { padding-block-end: calc(var(--gutter) + 3rem + var(--stack)); } /* Extra bottom padding so the floating button never covers the last content. */
 
   .mobile-menu-fab {
     position: fixed;
@@ -161,15 +164,15 @@ header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
     inset-block-end: var(--gutter);
     inline-size: 3rem;
     block-size: 3rem;
-    z-index: 1; /* above position:relative cards */
+    z-index: 1; /* Above the cards, which create their own stacking layers with position: relative. */
     border-radius: 50%;
     background: var(--ink);
     color: var(--bg);
     box-shadow: var(--shadow-sm);
   }
-  @supports (animation-timeline: scroll()) { /* no support: FAB just stays visible */
+  @supports (animation-timeline: scroll()) { /* Browsers without scroll-driven animations just show the button all the time. */
     .mobile-menu-fab {
-      animation: mobile-menu-fab-reveal linear both; /* hidden until the header scrolls away */
+      animation: mobile-menu-fab-reveal linear both; /* Hidden at the top of the page; fades in as the header scrolls away. */
       animation-timeline: scroll();
       animation-range: 0 5rem;
     }
@@ -179,7 +182,7 @@ header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
     }
   }
 
-  /* open: slide in from the end edge */
+  /* Open menu: a panel slides in from the right edge. */
   header nav {
     display: none;
     flex-direction: column;
@@ -187,20 +190,20 @@ header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
     gap: 0.25rem;
     position: fixed;
     inset-block: 0;
-    inset-inline: auto -100%; /* parked off-screen; inset, not translate, so a breakpoint crossing skips the exit slide */
-    block-size: auto; /* UA fit-content would beat the inset stretch */
+    inset-inline: auto -100%; /* Parked fully off-screen. Moved with inset, not translate, so resizing to desktop while open skips the slide-out animation. */
+    block-size: auto; /* Overrides the browser's default fit-content height, which would stop the panel from stretching top to bottom. */
     inline-size: 75vw;
     overflow-y: auto;
     padding: var(--gap) var(--gutter);
-    background: oklch(from var(--bg) l c h / 70%); /* glass; ::backdrop dims the page so white-on-white reads */
+    background: oklch(from var(--bg) l c h / 70%); /* Glass look. The ::backdrop darkens the page behind it so light text areas still read. */
     backdrop-filter: blur(0.75rem);
-    box-shadow: -0.25rem 0 0.5rem #0002, -1rem 0 3rem #0003; /* directional (casts left); deliberately not the --shadow-* tokens */
+    box-shadow: -0.25rem 0 0.5rem #0002, -1rem 0 3rem #0003; /* Shadow cast to the left, matching the slide direction. Not the --shadow-* tokens on purpose. */
     transition: inset-inline-end var(--motion), display var(--motion) allow-discrete, overlay var(--motion) allow-discrete;
   }
   header nav:popover-open { display: flex; inset-inline-end: 0; }
-  body:has(header nav:popover-open) { overflow: hidden; } /* popover doesn't lock scroll */
-  header nav a { padding: 0.75rem 0; font-size: 1.15em; } /* ~44px tap target */
-  header nav > a:first-child { margin-block-start: auto; } /* bottom-aligns when there is room, scrolls when not */
+  body:has(header nav:popover-open) { overflow: hidden; } /* Popovers don't stop the page from scrolling, so do it here. */
+  header nav a { padding: 0.75rem 0; font-size: 1.15em; } /* Makes each link about 44px tall to tap. */
+  header nav > a:first-child { margin-block-start: auto; } /* Pushes links to the bottom when there's room; the panel scrolls when there isn't. */
 
   header nav::backdrop {
     background: #0000;
@@ -217,50 +220,53 @@ header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
     place-items: center;
     min-inline-size: 2.75rem;
     min-block-size: 2.75rem;
-    margin-block-start: var(--stack); /* not a mis-tap from the last link */
+    margin-block-start: var(--stack);
     font-size: 2rem;
     line-height: 1;
   }
 }
 
 /* ── layout primitives ────────────────────────────── */
-main > section, footer { padding-block: var(--section-pad); } /* contract: top-level blocks are direct section children of main; a wrapper div loses padding + divider */
+main > section, footer { padding-block: var(--section-pad); } /* Rule: page blocks must be <section> elements directly inside <main>. Wrapping one in a div loses this padding and the divider line. */
 main > section + section, footer { border-block-start: 1px solid var(--line); }
 
 .wrapper { inline-size: min(100% - 2 * var(--gutter), 100rem); margin-inline: auto; }
 .flow > * + * { margin-block-start: var(--flow-space, 1em); }
 
-/* grid: --grid-min sets the column floor; --grid-cols caps the count (N-up when space allows, fewer when narrow).
-   The 100 default makes the per-column share negative so max() falls through to --grid-min — i.e. no cap. */
+/* Grid: --grid-min sets the smallest a column can get. --grid-cols caps how many columns fit
+   (N across when there's room, fewer when narrow). The default of 100 makes the per-column
+   math go negative, so max() falls back to --grid-min — meaning no cap. */
 .grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(min(100%, max(var(--grid-min, 16rem), (100% - (var(--grid-cols, 100) - 1) * var(--gap)) / var(--grid-cols, 100))), 1fr)); }
 .row { display: flex; flex-wrap: wrap; justify-content: var(--row-justify, center); align-items: var(--row-align, center); gap: var(--stack) var(--gap); }
 
-/* pair: media + text, 50/50, stacks media-first; asymmetric splits belong to .sidebar, not a ratio knob here */
+/* Pair: an image next to text, split 50/50. When narrow, it stacks with the image on top.
+   Need an uneven split? Use .sidebar instead — there's no ratio setting here on purpose. */
 .pair { display: grid; gap: calc(var(--gap) * 2); align-items: center; grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--pair-min, 22rem)), 1fr)); }
 .pair > .flow { max-inline-size: 60ch; }
-.pair.media-end > .media { grid-row: 1; grid-column: -2 / -1; } /* last column; the only column when stacked, so media stays first */
+.pair.media-end > .media { grid-row: 1; grid-column: -2 / -1; } /* Puts the image in the last column. When stacked there's only one column, so the image still lands on top. */
 
-/* sidebar: narrow first child, wide second; stacks when both can't fit. Exactly two children — a third is undefined; 3+ columns are .grid's job */
+/* Sidebar: narrow first child, wide second child. Stacks when both can't fit side by side.
+   Give it exactly two children — a third does nothing predictable. For 3+ columns, use .grid. */
 .sidebar { display: flex; flex-wrap: wrap; gap: calc(var(--gap) * 2); }
 .sidebar > :first-child { flex: 1 1 var(--sidebar-narrow, 16rem); }
 .sidebar > :last-child { flex: 999 1 0; min-inline-size: var(--sidebar-wide-min, 60%); }
 
-/* intro: eyebrow + heading + lead; centered unless beside a sidebar or told otherwise */
+/* Intro: small label + heading + lead paragraph. Centered, unless it sits inside a .sidebar or you override --intro-align. */
 .intro { display: grid; gap: var(--stack); justify-items: var(--intro-align, center); text-align: var(--intro-align, center); max-inline-size: 60ch; margin-inline: auto; }
 .sidebar > .intro { --intro-align: start; margin-inline: 0; }
 .intro > p:not(.eyebrow) { font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); color: var(--ink-muted); }
 .intro > .row { margin-block-start: var(--stack); }
-.flow > .intro + * { margin-block-start: calc(var(--gap) * 2); } /* contract: .intro must be a direct .flow child with a following sibling */
+.flow > .intro + * { margin-block-start: calc(var(--gap) * 2); } /* Rule: for this extra space to apply, .intro must sit directly inside .flow and have something after it. */
 
 .visually-hidden { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* ── content ──────────────────────────────────────── */
-.hero { display: grid; align-content: center; min-block-size: min(80svh, 52rem); padding: var(--section-pad) var(--gutter); } /* not 100svh: a peek of the next section is the scroll cue */
+.hero { display: grid; align-content: center; min-block-size: min(80svh, 52rem); padding: var(--section-pad) var(--gutter); } /* 80svh, not full screen: a sliver of the next section shows, hinting there's more to scroll. */
 .hero h1 { max-inline-size: 20ch; font-size: clamp(2.5rem, 1.5rem + 4vw, 4.5rem); line-height: 1.05; letter-spacing: -0.03em; }
 
 .button {
   display: inline-block;
-  padding: 0.75em 1.5em; /* ≥44px tall at body size */
+  padding: 0.75em 1.5em; /* Keeps the button at least 44px tall at body text size. */
   border-radius: var(--radius-sm);
   background: var(--ink);
   color: var(--bg);
@@ -268,14 +274,14 @@ main > section + section, footer { border-block-start: 1px solid var(--line); }
   line-height: 1.5;
 }
 .button:hover { background: var(--accent); }
-.button[data-variant="ghost"] { background: none; color: inherit; box-shadow: inset 0 0 0 1px var(--ink-muted); } /* --line fails 3:1 on an interactive boundary */
+.button[data-variant="ghost"] { background: none; color: inherit; box-shadow: inset 0 0 0 1px var(--ink-muted); } /* Border uses --ink-muted, not --line: --line is too light to pass the 3:1 contrast rule for interactive edges. */
 .button[data-variant="ghost"]:hover { background: var(--bg-tint); }
 
 .eyebrow { font-size: var(--font-small); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); }
 .arrow-link { font-weight: 600; color: var(--accent); }
 .arrow-link:hover { text-decoration: underline; }
 
-.media { /* placeholder box; swap for <img>/<video>, keep the frame */
+.media { /* Placeholder box. Swap in a real <img> or <video> and keep this frame styling. */
   aspect-ratio: 16 / 10;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
@@ -285,13 +291,13 @@ main > section + section, footer { border-block-start: 1px solid var(--line); }
 
 .logos { padding: calc(var(--section-pad) / 2) var(--gutter); text-align: center; color: var(--ink-muted); }
 .logos h2 { font-size: var(--font-small); font-weight: 500; letter-spacing: 0; margin-block-end: var(--stack); }
-.logos ul { font-weight: 700; font-size: 1.25rem; letter-spacing: -0.02em; } /* wordmark stand-ins */
-.logos img { block-size: 1.5rem; inline-size: auto; filter: grayscale(1); opacity: 0.7; } /* ready for the <img> swap the HTML comment invites */
+.logos ul { font-weight: 700; font-size: 1.25rem; letter-spacing: -0.02em; } /* Styles the placeholder text so it looks like logo wordmarks. */
+.logos img { block-size: 1.5rem; inline-size: auto; filter: grayscale(1); opacity: 0.7; } /* Ready for real logo images — the HTML comment there says how to swap them in. */
 
 .card {
-  position: relative; /* anchors the stretched link */
+  position: relative; /* Needed so the full-card link (further down) can stretch over the card. */
   display: grid;
-  grid-row: span 3; /* contract: exactly 3 row children (title/body/action); subgrid aligns them across siblings */
+  grid-row: span 3; /* Rule: a card holds exactly 3 children (title, body, link). Subgrid lines those rows up across all cards in the row. */
   grid-template-rows: subgrid;
   gap: var(--stack);
   padding: var(--gap);
@@ -302,10 +308,10 @@ main > section + section, footer { border-block-start: 1px solid var(--line); }
 .card:hover { border-color: var(--ink-muted); }
 .card > p { color: var(--ink-muted); }
 .card > a { align-self: end; }
-.card > a::after { content: ""; position: absolute; inset: 0; } /* whole card clickable */
+.card > a::after { content: ""; position: absolute; inset: 0; } /* Stretches the link over the whole card, so clicking anywhere works. */
 .card > a:focus-visible { outline: none; }
-.card:has(> a:focus-visible) { outline: 0.125rem solid var(--accent); outline-offset: 0.125rem; } /* ring the whole card instead */
-.card > figure { display: contents; } /* blockquote + figcaption become the subgrid rows */
+.card:has(> a:focus-visible) { outline: 0.125rem solid var(--accent); outline-offset: 0.125rem; } /* Draws the focus ring around the whole card instead of the small link. */
+.card > figure { display: contents; } /* Skips the figure box so the blockquote and figcaption become the card's grid rows. */
 figcaption { font-size: var(--font-small); color: var(--ink-muted); }
 figcaption strong { display: block; color: var(--ink); }
 
@@ -324,7 +330,7 @@ figcaption strong { display: block; color: var(--ink); }
 .faq summary::after { content: "+"; font-size: 1.5em; line-height: 1; color: var(--ink-muted); transition: rotate var(--motion); }
 .faq details[open] summary::after { rotate: 45deg; }
 .faq details p { padding-block-end: var(--stack); color: var(--ink-muted); }
-.faq details::details-content { /* animate open/close; unsupported browsers snap */
+.faq details::details-content { /* Animates the answer opening and closing. Browsers without support open instantly instead. */
   block-size: 0; overflow: clip; content-visibility: hidden;
   transition: block-size var(--motion), content-visibility var(--motion) allow-discrete;
 }
@@ -334,8 +340,8 @@ figcaption strong { display: block; color: var(--ink); }
 .cta small { color: var(--ink-muted); }
 
 footer { font-size: var(--font-small); }
-footer .sidebar > :first-child { max-inline-size: 28ch; color: var(--ink-muted); } /* brand column */
-.footer-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr)); gap: calc(var(--gap) * 2) var(--gap); } /* column count follows the markup */
+footer .sidebar > :first-child { max-inline-size: 28ch; color: var(--ink-muted); } /* The brand column: logo plus tagline. */
+.footer-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr)); gap: calc(var(--gap) * 2) var(--gap); } /* Shows as many columns as the HTML has — add a column there and it just appears. */
 footer h3 { font-size: var(--font-small); letter-spacing: 0; color: var(--ink); margin-block-end: var(--stack); }
 .footer-links ul { display: grid; gap: calc(var(--stack) / 2); color: var(--ink-muted); }
 .footer-legal { --row-justify: space-between; margin-block-start: calc(var(--gap) * 2); padding-block-start: var(--gap); border-block-start: 1px solid var(--line); color: var(--ink-muted); }
