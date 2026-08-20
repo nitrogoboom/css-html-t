@@ -123,7 +123,7 @@ header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
   :is(.mobile-menu-button, .mobile-menu-fab) span::after {
     display: block;
     inline-size: 1.5rem;
-    block-size: 2px;
+    block-size: 0.125rem; /* rem so bar thickness scales with the big-screen root ramp like the rest of the icon */
     background: currentColor;
     content: "";
   }
