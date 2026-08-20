@@ -1,8 +1,10 @@
 /* Modern CSS only: clamp(), :has(), subgrid, anchor positioning, Popover API.
    Primitives (one job each): .wrapper .flow .grid .row .pair .sidebar .intro. Sections paint full-bleed; text is capped per element (60ch).
+   Knobs: primitives state defaults as custom properties (--row-justify, --row-align, --grid-cols, --grid-min, --pair-min, --sidebar-narrow, --sidebar-wide-min, --intro-align, --flow-space);
+   override per instance via the style attribute. An override that repeats earns a modifier class (.media-end); data-variant is only for enumerated component styles (.button).
    Naming: names state purpose, never a rank or size suffix (--ink-muted, not --ink-2); a token paints only what its name says.
    Format: one space after colons, no column alignment; a rule collapses to one line only when short; banners are label-only at one width.
-   Mobile menu: the browser handles toggle/Escape/light dismiss; the one-liner in index.html closes it at the desktop breakpoint. */
+   Mobile menu: the browser handles toggle/Escape/light dismiss; menu.js closes it at the desktop breakpoint. */
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -26,6 +28,8 @@ html { font-size: clamp(100%, 0.75rem + 0.3125vw, 150%); }
   --motion: 0.25s ease;
   --radius-sm: 0.375rem;
   --radius-lg: 0.75rem;
+  --shadow-sm: 0 1px 2px #0003, 0 4px 12px #0004; /* contact + ambient; a single soft shadow bands on cheap panels */
+  --shadow-lg: 0 1px 2px #0002, 0 1rem 2rem -1rem #0003;
 
   --gutter: clamp(1rem, 4vw, 6rem); /* page edge */
   --gap: min(1.2rem + 1.5vw, 2.25rem); /* between siblings; clamp's floor was dead (preferred ≥ 1.2rem always) */
@@ -50,10 +54,27 @@ a { color: inherit; text-decoration: none; }
 :focus-visible { outline: 0.125rem solid var(--accent); outline-offset: 0.125rem; } /* rem so rings scale with the big-screen root ramp */
 h1, h2, h3, p, figure, blockquote { margin: 0; } /* spacing comes from .flow / gap */
 h1, h2, h3 { line-height: 1.15; text-wrap: balance; }
+h1 { font-size: clamp(2rem, 1.5rem + 2vw, 3rem); letter-spacing: -0.02em; } /* inner-page title band; .hero h1 overrides with the display size */
 h2 { font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem); letter-spacing: -0.02em; }
 h3 { font-size: 1.125rem; }
 p { text-wrap: pretty; }
 ul { margin: 0; padding: 0; list-style-type: ""; } /* "" not none: Safari keeps list semantics */
+address { font-style: normal; }
+
+.skip-link {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: var(--gutter);
+  z-index: 2; /* above the FAB */
+  padding: 0.5rem 1rem;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  background: var(--ink);
+  color: var(--bg);
+  font-weight: 600;
+  translate: 0 -150%; /* parked above the viewport until keyboard focus */
+  transition: translate var(--motion);
+}
+.skip-link:focus-visible { translate: 0 0; }
 
 /* ── header ───────────────────────────────────────── */
 header {
@@ -88,22 +109,24 @@ header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
 @media (width >= 64rem) {
   header nav { position: relative; isolation: isolate; }
   header nav a { padding: 0.25rem clamp(0.5rem, 0.75vw, 0.75rem); }
-  header nav a:is(:hover, :focus-visible, [aria-current="page"]) { anchor-name: --nav-hover; }
-  header nav:has(a:is(:hover, :focus-visible)) a[aria-current="page"]:not(:hover, :focus-visible) { anchor-name: none; } /* hovered link takes the anchor over */
-  header nav::before {
-    content: "";
-    position: absolute;
-    position-anchor: --nav-hover;
-    inset-inline-start: anchor(start);
-    inset-block-start: anchor(start);
-    inline-size: anchor-size(inline);
-    block-size: anchor-size(block);
-    z-index: -1;
-    border-radius: var(--radius-sm);
-    background: var(--nav-pill);
-    transition: inset-inline-start var(--motion), inline-size var(--motion), opacity var(--motion);
+  @supports (anchor-name: --x) { /* no support: links still get the color hover; no stray pill box */
+    header nav a:is(:hover, :focus-visible, [aria-current="page"]) { anchor-name: --nav-hover; }
+    header nav:has(a:is(:hover, :focus-visible)) a[aria-current="page"]:not(:hover, :focus-visible) { anchor-name: none; } /* hovered link takes the anchor over */
+    header nav::before {
+      content: "";
+      position: absolute;
+      position-anchor: --nav-hover;
+      inset-inline-start: anchor(start);
+      inset-block-start: anchor(start);
+      inline-size: anchor-size(inline);
+      block-size: anchor-size(block);
+      z-index: -1;
+      border-radius: var(--radius-sm);
+      background: var(--nav-pill);
+      transition: inset-inline-start var(--motion), inline-size var(--motion), opacity var(--motion);
+    }
+    header nav:not(:has(a:hover, a:focus-visible, a[aria-current="page"]))::before { opacity: 0; }
   }
-  header nav:not(:has(a:hover, a:focus-visible, a[aria-current="page"]))::before { opacity: 0; }
 }
 
 .mobile-menu-button, .mobile-menu-close, .mobile-menu-fab {
@@ -142,7 +165,7 @@ header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
     border-radius: 50%;
     background: var(--ink);
     color: var(--bg);
-    box-shadow: 0 1px 2px #0003, 0 4px 12px #0004; /* contact + ambient; a single soft shadow bands on cheap panels */
+    box-shadow: var(--shadow-sm);
   }
   @supports (animation-timeline: scroll()) { /* no support: FAB just stays visible */
     .mobile-menu-fab {
@@ -171,7 +194,7 @@ header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
     padding: var(--gap) var(--gutter);
     background: oklch(from var(--bg) l c h / 70%); /* glass; ::backdrop dims the page so white-on-white reads */
     backdrop-filter: blur(0.75rem);
-    box-shadow: -0.25rem 0 0.5rem #0002, -1rem 0 3rem #0003;
+    box-shadow: -0.25rem 0 0.5rem #0002, -1rem 0 3rem #0003; /* directional (casts left); deliberately not the --shadow-* tokens */
     transition: inset-inline-end var(--motion), display var(--motion) allow-discrete, overlay var(--motion) allow-discrete;
   }
   header nav:popover-open { display: flex; inset-inline-end: 0; }
@@ -201,31 +224,33 @@ header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
 }
 
 /* ── layout primitives ────────────────────────────── */
-main > section, footer { padding-block: var(--section-pad); }
+main > section, footer { padding-block: var(--section-pad); } /* contract: top-level blocks are direct section children of main; a wrapper div loses padding + divider */
 main > section + section, footer { border-block-start: 1px solid var(--line); }
 
 .wrapper { inline-size: min(100% - 2 * var(--gutter), 100rem); margin-inline: auto; }
-.flow > * + * { margin-block-start: 1em; }
+.flow > * + * { margin-block-start: var(--flow-space, 1em); }
 
-.grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
-.row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--stack) var(--gap); }
+/* grid: --grid-min sets the column floor; --grid-cols caps the count (N-up when space allows, fewer when narrow).
+   The 100 default makes the per-column share negative so max() falls through to --grid-min — i.e. no cap. */
+.grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(min(100%, max(var(--grid-min, 16rem), (100% - (var(--grid-cols, 100) - 1) * var(--gap)) / var(--grid-cols, 100))), 1fr)); }
+.row { display: flex; flex-wrap: wrap; justify-content: var(--row-justify, center); align-items: var(--row-align, center); gap: var(--stack) var(--gap); }
 
-/* pair: media + text, 50/50, stacks media-first */
-.pair { display: grid; gap: calc(var(--gap) * 2); align-items: center; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+/* pair: media + text, 50/50, stacks media-first; asymmetric splits belong to .sidebar, not a ratio knob here */
+.pair { display: grid; gap: calc(var(--gap) * 2); align-items: center; grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--pair-min, 22rem)), 1fr)); }
 .pair > .flow { max-inline-size: 60ch; }
 .pair.media-end > .media { grid-row: 1; grid-column: -2 / -1; } /* last column; the only column when stacked, so media stays first */
 
-/* sidebar: narrow first child, wide second; stacks when both can't fit */
+/* sidebar: narrow first child, wide second; stacks when both can't fit. Exactly two children — a third is undefined; 3+ columns are .grid's job */
 .sidebar { display: flex; flex-wrap: wrap; gap: calc(var(--gap) * 2); }
-.sidebar > :first-child { flex: 1 1 16rem; }
-.sidebar > :last-child { flex: 999 1 0; min-inline-size: 60%; }
+.sidebar > :first-child { flex: 1 1 var(--sidebar-narrow, 16rem); }
+.sidebar > :last-child { flex: 999 1 0; min-inline-size: var(--sidebar-wide-min, 60%); }
 
-/* intro: eyebrow + heading + lead; centered unless beside a sidebar */
-.intro { display: grid; gap: var(--stack); justify-items: center; text-align: center; max-inline-size: 60ch; margin-inline: auto; }
-.sidebar > .intro { justify-items: start; text-align: start; margin-inline: 0; }
+/* intro: eyebrow + heading + lead; centered unless beside a sidebar or told otherwise */
+.intro { display: grid; gap: var(--stack); justify-items: var(--intro-align, center); text-align: var(--intro-align, center); max-inline-size: 60ch; margin-inline: auto; }
+.sidebar > .intro { --intro-align: start; margin-inline: 0; }
 .intro > p:not(.eyebrow) { font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); color: var(--ink-muted); }
 .intro > .row { margin-block-start: var(--stack); }
-.flow > .intro + * { margin-block-start: calc(var(--gap) * 2); }
+.flow > .intro + * { margin-block-start: calc(var(--gap) * 2); } /* contract: .intro must be a direct .flow child with a following sibling */
 
 .visually-hidden { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
@@ -255,7 +280,7 @@ main > section + section, footer { border-block-start: 1px solid var(--line); }
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   background: var(--bg-tint);
-  box-shadow: 0 1px 2px #0002, 0 1rem 2rem -1rem #0003;
+  box-shadow: var(--shadow-lg);
 }
 
 .logos { padding: calc(var(--section-pad) / 2) var(--gutter); text-align: center; color: var(--ink-muted); }
@@ -266,7 +291,7 @@ main > section + section, footer { border-block-start: 1px solid var(--line); }
 .card {
   position: relative; /* anchors the stretched link */
   display: grid;
-  grid-row: span 3; /* title/body/action; subgrid aligns them across siblings */
+  grid-row: span 3; /* contract: exactly 3 row children (title/body/action); subgrid aligns them across siblings */
   grid-template-rows: subgrid;
   gap: var(--stack);
   padding: var(--gap);
@@ -310,8 +335,7 @@ figcaption strong { display: block; color: var(--ink); }
 
 footer { font-size: var(--font-small); }
 footer .sidebar > :first-child { max-inline-size: 28ch; color: var(--ink-muted); } /* brand column */
-.footer-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: calc(var(--gap) * 2) var(--gap); }
-@media (width >= 40rem) { .footer-links { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.footer-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr)); gap: calc(var(--gap) * 2) var(--gap); } /* column count follows the markup */
 footer h3 { font-size: var(--font-small); letter-spacing: 0; color: var(--ink); margin-block-end: var(--stack); }
 .footer-links ul { display: grid; gap: calc(var(--stack) / 2); color: var(--ink-muted); }
-.footer-legal { justify-content: space-between; margin-block-start: calc(var(--gap) * 2); padding-block-start: var(--gap); border-block-start: 1px solid var(--line); color: var(--ink-muted); }
+.footer-legal { --row-justify: space-between; margin-block-start: calc(var(--gap) * 2); padding-block-start: var(--gap); border-block-start: 1px solid var(--line); color: var(--ink-muted); }
