@@ -10,6 +10,10 @@
    rem/% here resolve against the user's base size, so browser font settings and zoom still work.
    Component clamps below keep handling the 320→1370px ramp; this rule owns everything wider. */
 html { font-size: clamp(100%, 0.75rem + 0.3125vw, 150%); }
+@media (min-device-width: 3000px) { /* 4K-class panel at ~100% OS scaling: raise the floor so small windows stay physically legible. device-width is the screen, not the window; scaled monitors report <3000 and opt out. Deprecated query, but MQ spec mandates support. */
+  html { font-size: clamp(125%, 0.75rem + 0.3125vw, 150%); }
+}
+@media print { html { font-size: 100%; } } /* Firefox inflates vw by print DPI (bug 1622017) */
 
 :root {
   --ink: #16181d;
@@ -24,7 +28,7 @@ html { font-size: clamp(100%, 0.75rem + 0.3125vw, 150%); }
   --radius-lg: 0.75rem;
 
   --gutter: clamp(1rem, 4vw, 6rem); /* page edge */
-  --gap: clamp(1.2rem, 1.2rem + 1.5vw, 2.25rem); /* between siblings */
+  --gap: min(1.2rem + 1.5vw, 2.25rem); /* between siblings; clamp's floor was dead (preferred ≥ 1.2rem always) */
   --stack: clamp(1rem, 0.8rem + 1vw, 1.5rem); /* rhythm inside a block */
   --section-pad: clamp(4rem, 3.2rem + 4vw, 6rem); /* section padding-block */
 
@@ -43,7 +47,7 @@ body {
 
 img, picture, video, svg { display: block; max-inline-size: 100%; }
 a { color: inherit; text-decoration: none; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+:focus-visible { outline: 0.125rem solid var(--accent); outline-offset: 0.125rem; } /* rem so rings scale with the big-screen root ramp */
 h1, h2, h3, p, figure, blockquote { margin: 0; } /* spacing comes from .flow / gap */
 h1, h2, h3 { line-height: 1.15; text-wrap: balance; }
 h2 { font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem); letter-spacing: -0.02em; }
@@ -275,7 +279,7 @@ main > section + section, footer { border-block-start: 1px solid var(--line); }
 .card > a { align-self: end; }
 .card > a::after { content: ""; position: absolute; inset: 0; } /* whole card clickable */
 .card > a:focus-visible { outline: none; }
-.card:has(> a:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; } /* ring the whole card instead */
+.card:has(> a:focus-visible) { outline: 0.125rem solid var(--accent); outline-offset: 0.125rem; } /* ring the whole card instead */
 .card > figure { display: contents; } /* blockquote + figcaption become the subgrid rows */
 figcaption { font-size: var(--font-small); color: var(--ink-muted); }
 figcaption strong { display: block; color: var(--ink); }
