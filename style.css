@@ -204,7 +204,7 @@ header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
   header nav:popover-open { display: flex; inset-inline-end: 0; }
   body:has(header nav:popover-open) { overflow: hidden; } /* Popovers don't stop the page from scrolling, so do it here. */
   header nav a { padding: 0.75rem 0; font-size: 1.15em; } /* Makes each link about 44px tall to tap. */
-  header nav > a:first-child { margin-block-start: auto; } /* Pushes links to the bottom when there's room; the panel scrolls when there isn't. */
+  header nav > :first-child { margin-block-start: auto; } /* :first-child, not a:first-child: the first item is now the Managed Services dropdown. */ /* Pushes links to the bottom when there's room; the panel scrolls when there isn't. */
 
   header nav::backdrop {
     background: #0000;
@@ -225,6 +225,31 @@ header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
     font-size: 2rem;
     line-height: 1;
   }
+}
+
+/* ── nav dropdown ─────────────────────────────────── */
+header nav summary { cursor: pointer; list-style: none; }
+header nav details > div { display: grid; }
+header nav summary::after { content: " +"; color: var(--ink-muted); }
+header nav details[open] summary::after { content: " \2212"; } /* minus sign */
+@media (width >= 64rem) {
+  header nav details { position: relative; }
+  header nav summary { padding: 0.25rem clamp(0.5rem, 0.75vw, 0.75rem); }
+  header nav details > div {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-start: 0;
+    min-inline-size: max-content;
+    padding: 0.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    box-shadow: var(--shadow-sm);
+  }
+}
+@media (width < 64rem) {
+  header nav details { text-align: end; }
+  header nav summary { padding: 0.75rem 0; font-size: 1.15em; } /* Same tap size as the links around it. */
 }
 
 /* ── layout primitives ────────────────────────────── */
