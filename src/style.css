@@ -18,10 +18,15 @@ main { view-transition-name: page-content; }
 .mobile-menu-fab { view-transition-name: menu-fab; } /* Fixed elements render under the snapshot layer unless named. */
 ::view-transition-old(page-content) { animation: var(--motion-page) both page-leave; } /* Own token: page transitions read better a beat slower than hover micro-motion. */
 ::view-transition-new(page-content) { animation: var(--motion-page) both page-enter; }
-/* Whole-surface slide: the old page pushes out left, the new one arrives from the right, header and
-   footer hold still (their named groups). Owner call 2026-08-20 — one visible motion, no per-element morphs. */
-@keyframes page-leave { to { translate: -100% 0; } }
+/* Whole-surface push: the new page slides in on top while the old one drifts back and fades under it
+   (new snapshots always paint above old, so there's no see-through overlap). Owner call 2026-08-20 —
+   one visible motion, no per-element morphs. Chrome layers snap, not glide: on pages of different
+   heights the footer's pinned group would otherwise animate to its new spot and fight the slide. */
+@keyframes page-leave { to { translate: -30% 0; opacity: 0; } }
 @keyframes page-enter { from { translate: 100% 0; } }
+::view-transition-group(site-header), ::view-transition-old(site-header), ::view-transition-new(site-header),
+::view-transition-group(site-footer), ::view-transition-old(site-footer), ::view-transition-new(site-footer),
+::view-transition-group(menu-fab), ::view-transition-old(menu-fab), ::view-transition-new(menu-fab) { animation-duration: 0s; }
 
 /* Big-screen scaling. Font size stays at 100% up to a 1280px-wide window. Past that, the root font size grows,
    so the whole rem-based layout grows with it: 125% at 2560px, capped at 150% at 3840px.
@@ -42,7 +47,7 @@ html { font-size: clamp(100%, 0.75rem + 0.3125vw, 150%); }
   --ink-wash: oklch(from var(--ink) l c h / 6%); /* Faint ink fill for hover states on nav items. */
   --accent: #0047ab; /* Cobalt blue. Placeholder accent for button hovers, link hovers, and the focus ring. */
   --motion: 0.25s ease;
-  --motion-page: 0.35s ease; /* Cross-page view transitions only. */
+  --motion-page: 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Cross-page view transitions only. Standard decel curve — slides read smoother than plain ease. */
   --radius-sm: 0.375rem;
   --radius-lg: 0.75rem;
   --shadow-ink: oklch(0.25 0.04 255); /* Shadow tint: near-black with the page's cool cast. Pure black grays out the slate palette. */
