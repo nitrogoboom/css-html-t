@@ -4,7 +4,10 @@
   <button type="button" class="mobile-menu-button" popovertarget="mobile-menu" aria-label="Menu"><span></span></button>
 
   <nav id="mobile-menu" popover aria-label="Main">
-    <button type="button" class="mobile-menu-close" popovertarget="mobile-menu" popovertargetaction="hide" aria-label="Close" autofocus>&times;</button>
+    <div class="menu-bar">
+      <button type="button" class="mobile-menu-close" popovertarget="mobile-menu" popovertargetaction="hide" aria-label="Close" autofocus>&times;</button>
+      <a class="menu-home" href="/"{% if page.url == "/" %} aria-current="page"{% endif %}><span class="visually-hidden">Home</span></a>
+    </div>
     <div class="menu-group">
       {%- for section in nav.sections %}
       <details name="nav">
