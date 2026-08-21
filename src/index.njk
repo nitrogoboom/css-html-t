@@ -59,7 +59,7 @@ description: Company Name designs and builds fast, accessible websites for small
     </div>
     <ul class="grid">
       {%- for s in services %}{% if loop.index <= 3 %}
-      {{ card(s.title, s.lead, "/services/" + s.slug + "/") }}
+      {{ card(s.title, s.lead, "/services/" + s.slug + "/", "vt-svc-" + s.slug) }}
       {%- endif %}{% endfor %}
     </ul>
   </div>

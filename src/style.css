@@ -20,6 +20,14 @@ main { view-transition-name: page-content; }
 ::view-transition-new(page-content) { animation: var(--motion-page) both page-enter; }
 @keyframes page-leave { to { opacity: 0; translate: 0 -0.75rem; } }
 @keyframes page-enter { from { opacity: 0; translate: 0 0.75rem; } }
+/* Title morphs: a list-card title glides into the matching page <h1>. Templates pair the two with the
+   same inline view-transition-name (vt-svc-<slug>, vt-post-<slug>) — build-time inline names are the
+   only approach both Chromium and Safari support; names must be unique per page, slugs guarantee that.
+   view-transition-class is Chromium 125+ only: Safari still morphs, just without these refinements.
+   Snapshot sizing stays on the UA default (width fills, height follows) — correct for wide text blocks. */
+::view-transition-group(.morph-title) { overflow: clip; } /* Snapshots stay clipped to the box while its size interpolates. */
+::view-transition-new(.morph-title):only-child { animation: var(--motion-page) both page-enter; } /* Unpaired title (page reached via nav, no card left behind): slide with the page instead of fading in place. */
+::view-transition-old(.morph-title):only-child { animation: var(--motion-page) both page-leave; }
 
 /* Big-screen scaling. Font size stays at 100% up to a 1280px-wide window. Past that, the root font size grows,
    so the whole rem-based layout grows with it: 125% at 2560px, capped at 150% at 3840px.

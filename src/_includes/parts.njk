@@ -1,10 +1,11 @@
 {# Reusable HTML shapes. One-tag elements stay CSS classes; multi-tag repeats live here.
    Import with: {% from "parts.njk" import card, faq, cta %} #}
 
-{# card: exactly 3 children (title, body, link) — the subgrid card contract in style.css. #}
-{% macro card(title, body, href) -%}
+{# card: exactly 3 children (title, body, link) — the subgrid card contract in style.css.
+   vt (optional): view-transition-name pairing this title with the destination page's <h1> for a cross-page morph. #}
+{% macro card(title, body, href, vt) -%}
 <li class="card">
-  <h3>{{ title }}</h3>
+  <h3{% if vt %} style="view-transition-name: {{ vt }}; view-transition-class: morph-title"{% endif %}>{{ title }}</h3>
   <p>{{ body }}</p>
   <a class="arrow-link" href="{{ href }}">Learn more<span class="visually-hidden"> about {{ title }}</span> &rarr;</a>
 </li>

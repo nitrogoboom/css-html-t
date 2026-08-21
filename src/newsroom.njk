@@ -15,7 +15,7 @@ permalink: /newsroom/
     <ul class="grid" style="--grid-cols: 3;">
       {%- for post in collections.posts | reverse %}
       <li class="card">
-        <h2 class="post-card-title">{{ post.data.title }}</h2>
+        <h2 class="post-card-title" style="view-transition-name: vt-post-{{ post.fileSlug }}; view-transition-class: morph-title">{{ post.data.title }}</h2>
         <p><time datetime="{{ post.date | htmlDateString }}">{{ post.date | readableDate }}</time> &middot; {{ post.data.description }}</p>
         <a class="arrow-link" href="{{ post.url }}">Read post<span class="visually-hidden">: {{ post.data.title }}</span> &rarr;</a>
       </li>
