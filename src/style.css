@@ -108,12 +108,12 @@ header {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  min-block-size: 3.875rem;
+  min-block-size: 3.5rem;
   padding-inline: var(--gutter);
   border-block-end: 1px solid var(--line);
 }
 
-.brand { white-space: nowrap; font-size: 1.1em; font-weight: 700; letter-spacing: -0.02em; }
+.brand { white-space: nowrap; font-size: 1rem; font-weight: 700; letter-spacing: -0.02em; }
 
 /* One nav element with two jobs: a slide-in popover on mobile, a plain inline nav on desktop.
    display: flex overrides the browser's default [popover] { display: none }, so on desktop
@@ -121,7 +121,7 @@ header {
 header nav {
   display: flex;
   align-items: center;
-  font-size: clamp(1rem, 0.95rem + 0.2vw, 1.1rem); /* 16px floor per NN/g and the fluid-type masters; the root clamp carries it further on 4K. */
+  font-size: 1rem; /* Mobile drawer size. Desktop overrides below — nav is functional text, sized under body copy. */
   margin: 0;
   padding: 0;
   border: 0;
@@ -136,9 +136,10 @@ footer a:hover { text-decoration: underline; } /* Color alone can't signal the h
 /* Desktop nav: a 2px ink underline grows under the hovered or open item.
    The open dropdown panel docks flush under the header's bottom border. */
 @media (width >= 64rem) {
-  header nav { position: relative; } /* Overrides the browser's default position: fixed on popovers, so the nav sits in the header row. */
+  header nav { position: relative; font-size: 0.875rem; } /* position overrides the browser's default position: fixed on popovers, so the nav sits in the header row.
+    14px nav links: the industry standard (Stripe/Vercel ship 14px, Material's nav token is 14px; researched 2026-08-20). WCAG sets no font minimum — the click target stays ≥44px via block padding, contrast unchanged. */
   .menu-group { display: contents; } /* Group wrappers only matter in the mobile drawer; here their links lay out as plain row items. */
-  header nav :is(.menu-group > a:not(.button), summary) { position: relative; padding: 1.25rem clamp(0.5rem, 0.75vw, 0.75rem); } /* Block padding stretches each item to the full header height, so the dropdown panel can dock against the header edge. */
+  header nav :is(.menu-group > a:not(.button), summary) { position: relative; padding: 1.125rem clamp(0.5rem, 0.75vw, 0.75rem); } /* Block padding stretches each item to the full header height, so the dropdown panel can dock against the header edge. */
   header nav :is(.menu-group > a:not(.button), summary)::before {
     content: "";
     position: absolute;

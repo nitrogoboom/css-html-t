@@ -27,7 +27,7 @@ Eleventy + Nunjucks, static output, Cloudflare Pages. Monochrome (ink/paper/gray
 - Monochrome + the one accent. No new colors.
 - No JS frameworks or libraries. HTML first, CSS second, vanilla JS last and rarely.
 - No fixed px for type, spacing, or layout. Hairline borders and shadow offsets exempt.
-- Interactive text ≥ 1rem; tap targets ≥ 44px; text contrast 4.5:1; interactive edges and focus 3:1.
+- Interactive text ≥ 1rem — except desktop nav at 0.875rem (14px is the Stripe/Vercel/Material standard; WCAG has no font floor). Tap targets ≥ 44px; text contrast 4.5:1; interactive edges and focus 3:1.
 - Never flashing content. Transitions ≤ ~400ms.
 
 ## Lessons (max 10 lines — prune the stalest when full)

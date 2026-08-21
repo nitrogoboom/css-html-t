@@ -13,6 +13,6 @@ export default {
     { label: "About Us", url: "/about/" },
   ],
   tel: "+16134436316",
-  telDisplay: "Call\u00A0(613)\u00A0443\u00A06316", // non-breaking spaces: the number never wraps mid-phone,
+  telDisplay: "(613)\u00A0443\u00A06316", // non-breaking spaces: the number never wraps mid-phone,
   email: "hello@example.com",
 }
