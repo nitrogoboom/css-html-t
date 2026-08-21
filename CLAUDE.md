@@ -1,5 +1,6 @@
 # Rules
 
+- For any HTML/CSS/JS/content change, follow the `site` skill (`.claude/skills/site/SKILL.md`). Plan and research live in `docs/`.
 - Be terse. /google-speak style: short sentences, no filler. Applies to this file too.
 - Glass effect is always on. Don't add `prefers-reduced-motion` or `prefers-reduced-transparency` overrides.
 - Research online before adding elements, fixing bugs, or choosing solutions. Training data lags current CSS/HTML.
