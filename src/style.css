@@ -45,7 +45,6 @@ html { font-size: clamp(100%, 0.75rem + 0.3125vw, 150%); }
 
   --font-small: 0.875rem;
 
-  interpolate-size: allow-keywords; /* Lets height animate to auto (used by the FAQ open animation). */
 }
 
 body {
@@ -79,7 +78,6 @@ address { font-style: normal; }
   color: var(--bg);
   font-weight: 600;
   translate: 0 -150%; /* Hidden above the screen until it gets keyboard focus. */
-  transition: translate var(--motion);
 }
 .skip-link:focus-visible { translate: 0 0; }
 
@@ -256,7 +254,6 @@ header nav summary::after { /* Chevron, drawn from two borders. Rotates to point
   border-block-end: 0.09375rem solid var(--ink-muted);
   rotate: 45deg;
   translate: 0 -0.125rem;
-  transition: rotate var(--motion), translate var(--motion);
 }
 header nav details[open] summary::after { rotate: 225deg; translate: 0 0.125rem; }
 @media (width >= 64rem) {
@@ -324,7 +321,6 @@ main > section + section, footer { border-block-start: 1px solid var(--line); }
   color: var(--bg);
   font-weight: 600;
   line-height: 1.5;
-  transition: background var(--motion), box-shadow var(--motion);
 }
 .button:hover { background: var(--accent); }
 .button[data-variant="ghost"] { background: none; color: inherit; box-shadow: inset 0 0 0 1px var(--ink-muted); } /* Border uses --ink-muted, not --line: --line is too light to pass the 3:1 contrast rule for interactive edges. */
@@ -357,7 +353,6 @@ main > section + section, footer { border-block-start: 1px solid var(--line); }
   padding: var(--gap);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  transition: border-color var(--motion);
 }
 .card:has(> a):hover { border-color: var(--ink-muted); } /* Only link cards get the hover cue; quote cards aren't clickable and shouldn't pretend. */
 .card > p { color: var(--ink-muted); }
@@ -381,14 +376,9 @@ figcaption strong { display: block; color: var(--ink); }
   cursor: pointer;
   list-style: none;
 }
-.faq summary::after { content: "+"; font-size: 1.5em; line-height: 1; color: var(--ink-muted); transition: rotate var(--motion); }
+.faq summary::after { content: "+"; font-size: 1.5em; line-height: 1; color: var(--ink-muted); }
 .faq details[open] summary::after { rotate: 45deg; }
 .faq details p { padding-block-end: var(--stack); color: var(--ink-muted); }
-.faq details::details-content { /* Animates the answer opening and closing. Browsers without support open instantly instead. */
-  block-size: 0; overflow: clip; content-visibility: hidden;
-  transition: block-size var(--motion), content-visibility var(--motion) allow-discrete;
-}
-.faq details[open]::details-content { block-size: auto; content-visibility: visible; }
 
 .cta { background: var(--bg-tint); }
 .cta small { color: var(--ink-muted); }
