@@ -37,6 +37,7 @@ Eleventy + Nunjucks, static output, Cloudflare Pages. Monochrome (ink/paper/gray
 - Selector lists lose specificity fights silently — fold lit states into one `:is()` sharing the base selector's weight.
 - Breakers work in isolated tabs, one surface each; `elementFromPoint` is paint truth.
 - View-transition snapshots default to width-fills/height-follows — right for wide text; the `height: 100%` aspect-ratio fix is for images, don't cargo-cult it onto titles.
+- Whole-page slides go on `root`, never on a named `main`: element groups animate geometry, so scrolled pages (every mobile click) sweep vertically to the new scroll position; root snapshots are viewport-aligned and scroll-proof.
 
 ## Where things live
 

@@ -12,12 +12,11 @@
 /* Cross-document view transitions: both pages carry this rule, so link clicks animate between them.
    Chrome 126+ and Safari 18.2+ animate; Firefox just navigates normally — no fallback code needed. */
 @view-transition { navigation: auto; }
-header { view-transition-name: site-header; } /* Named chrome persists instead of cross-fading with the page. */
+header { view-transition-name: site-header; } /* Named chrome persists instead of sliding with the page. */
 footer { view-transition-name: site-footer; }
-main { view-transition-name: page-content; }
 .mobile-menu-fab { view-transition-name: menu-fab; } /* Fixed elements render under the snapshot layer unless named. */
-::view-transition-old(page-content) { animation: var(--motion-page) both page-leave; } /* Own token: page transitions read better a beat slower than hover micro-motion. */
-::view-transition-new(page-content) { animation: var(--motion-page) both page-enter; }
+::view-transition-old(root) { animation: var(--motion-page) both page-leave; } /* The push rides the root snapshot, not <main>: root captures the viewport as seen, so a scrolled page slides sideways instead of sweeping vertically to the new page's scroll position. */
+::view-transition-new(root) { animation: var(--motion-page) both page-enter; }
 /* Whole-surface push: the new page slides in on top while the old one drifts back and fades under it
    (new snapshots always paint above old, so there's no see-through overlap). Owner call 2026-08-20 —
    one visible motion, no per-element morphs. Chrome layers snap, not glide: on pages of different
@@ -101,7 +100,7 @@ address { font-style: normal; }
 
 /* ── header ───────────────────────────────────────── */
 header {
-  position: relative; /* With z-index: keeps the dropdown panels above <main>, which view-transition-name promotes into its own paint layer. */
+  position: relative; /* With z-index: keeps the dropdown panels above <main>. */
   z-index: 1;
   display: flex;
   align-items: center;
