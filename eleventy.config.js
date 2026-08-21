@@ -25,5 +25,5 @@ export default function (eleventyConfig) {
     },
   });
 
-  return { dir: { input: "src", includes: "_includes" } };
+  return { dir: { input: "src" } }; // includes defaults to _includes
 }

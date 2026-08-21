@@ -9,7 +9,7 @@ You are working on a monochrome MSP website. Static files, Cloudflare Pages, nea
 
 ## The stack
 
-- **Build:** Eleventy + Nunjucks. Pages are `.njk` files in `src/`. Shared shell: `src/_includes/base.njk` + `nav.njk` + `footer.njk`. Nav/footer links: `src/_data/nav.json` (edit once, every page updates). Repeated HTML shapes become macros in `src/_includes/parts.njk`; one-tag elements stay CSS classes with `data-variant`. Markdown for blog posts.
+- **Build:** Eleventy + Nunjucks. Pages are `.njk` files in `src/`. Shared shell: `src/_includes/base.njk` + `nav.njk` + `footer.njk`. Nav/footer links: `src/_data/nav.js` (derives from services.js/industries.js — edit those once, every page updates). Repeated HTML shapes become macros in `src/_includes/parts.njk`; one-tag elements stay CSS classes with `data-variant`. Markdown for blog posts.
 - **Hosting:** Cloudflare Pages via wrangler. Do not migrate to Workers.
 - **JS:** Vanilla only. No frameworks, no htmx, no Alpine. Ever.
 - **Design:** Black, white, and grays. No new colors. Glass effect stays on. No reduced-motion overrides.

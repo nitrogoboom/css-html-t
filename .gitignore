@@ -1,7 +1,4 @@
 node_modules/
-.claude/settings.local.json
-.playwright-mcp/
-.wrangler/
-
 _site/
-node_modules/
+.claude/settings.local.json
+.wrangler/

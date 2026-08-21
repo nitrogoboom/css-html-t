@@ -3,7 +3,7 @@ layout: base.njk
 title: Lorem
 description: Company Name designs and builds fast, accessible websites for small businesses and independent professionals.
 ---
-{% from "parts.njk" import card %}
+{% from "parts.njk" import card, faq, cta %}
 <!-- hero: centered stack, h1 ≤ 8 words, lead ≤ 20 words, primary + ghost CTA -->
 <section class="hero" aria-labelledby="hero-title">
   <div class="intro">
@@ -104,23 +104,12 @@ description: Company Name designs and builds fast, accessible websites for small
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     </div>
     <div class="faq">
-      <details name="faq"><summary>Question one: voluptatem quia voluptas sit aspernatur?</summary><p>Aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p></details>
-      <details name="faq"><summary>Question two: neque porro quisquam est?</summary><p>Qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora.</p></details>
-      <details name="faq"><summary>Question three: ut labore et dolore magnam aliquam?</summary><p>Quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit.</p></details>
-      <details name="faq"><summary>Question four: quis autem vel eum iure?</summary><p>Reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.</p></details>
+      {{ faq("Question one: voluptatem quia voluptas sit aspernatur?", "Aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.") }}
+      {{ faq("Question two: neque porro quisquam est?", "Qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora.") }}
+      {{ faq("Question three: ut labore et dolore magnam aliquam?", "Quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit.") }}
+      {{ faq("Question four: quis autem vel eum iure?", "Reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.") }}
     </div>
   </div>
 </section>
 
-<!-- call to action: centered stack on a tinted band; one primary, one ghost, one risk-reducer line -->
-<section class="cta">
-  <div class="wrapper intro">
-    <h2>Call to action</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    <div class="row">
-      <a class="button" href="#">Lorem ipsum</a>
-      <a class="button" data-variant="ghost" href="#">Dolor sit</a>
-    </div>
-    <p><small>No credit card required.</small></p>
-  </div>
-</section>
+{{ cta() }}

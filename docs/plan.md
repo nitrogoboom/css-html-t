@@ -32,6 +32,7 @@ The scoped outlook for this site. Research notes live in [research/](research/).
 2. **Contact + opt-in**: Pages Function + Turnstile + Buttondown + Resend; gated downloads via R2. See [research/forms-cloudflare.md](research/forms-cloudflare.md).
 3. **AI-readiness pass**: robots.txt welcoming citation bots, Cloudflare AI Crawl Control check, sitemap — needs the real domain first. See [research/ai-ready.md](research/ai-ready.md).
 4. **Images**: `@11ty/eleventy-img` when real photos land. See [research/perf-a11y.md](research/perf-a11y.md).
+5. **Icons + OG image**: base.njk references `favicon.ico`, `icon.svg`, `apple-touch-icon.png`, `og.jpg` — none exist yet, so every page quietly 404s four times. Create them with the real branding.
 
 ## Standing rules
 
