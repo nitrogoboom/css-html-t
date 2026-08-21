@@ -145,6 +145,7 @@ footer a:hover { text-decoration: underline; } /* Color alone can't signal the h
   font: inherit;
   cursor: pointer;
 }
+.menu-bar { display: none; } /* The drawer's toolbar row (Home + Close). Mobile-only, like the buttons above. */
 
 /* ── mobile menu ──────────────────────────────────── */
 @media (width < 64rem) { /* 64rem: menu.js in index.html uses the same number. Change both together. */
@@ -210,7 +211,7 @@ footer a:hover { text-decoration: underline; } /* Color alone can't signal the h
   body:has(header nav:popover-open) { overflow: hidden; } /* Popovers don't stop the page from scrolling, so do it here. */
   .menu-group { display: grid; }
   .menu-group + .menu-group { margin-block-start: 1.5rem; } /* A clear rhythm break between the section, page, and contact groups. */
-  header nav > .menu-group:first-of-type { margin-block-start: auto; } /* Pushes the groups to the bottom (thumb reach) when there's room; the panel scrolls when there isn't. */
+  header nav > .menu-bar + .menu-group { margin-block-start: auto; } /* Pushes the groups to the bottom (thumb reach) when there's room; the panel scrolls when there isn't. The toolbar row stays pinned at the top. */
   header nav :is(a, summary) { display: flex; align-items: center; min-block-size: 2.75rem; padding: 0.625rem 0.5rem; border-radius: var(--radius-sm); } /* Full-width rows: the whole strip is tappable, and min-block-size guarantees the 44px target at any font scale. */
   header nav :is(a, summary):hover { background: var(--ink-wash); }
   header nav summary { justify-content: space-between; font-weight: 600; } /* Section toggles: bold, chevron pushed to the far edge. */
@@ -231,12 +232,30 @@ footer a:hover { text-decoration: underline; } /* Color alone can't signal the h
     header nav:popover-open::backdrop { background: #0000; }
   }
 
-  .mobile-menu-close { /* First child of the panel, pinned top-right — mirrors where the hamburger was. */
+  .menu-bar { display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between; } /* The open drawer hides the header, so it gets its own: Home left, Close right. Close sits first in the DOM so Tab from its autofocus lands on Home next; row-reverse keeps the visual order. */
+
+  .menu-home { /* Icon-only twin of .mobile-menu-close: same 2.75rem target; hover wash and radius come from the shared row rule above. */
+    --icon-home: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.75 10.75 L12 3.75 L20.25 10.75 V20.25 H3.75 Z M9.25 20.25 V13.5 H14.75 V20.25'/%3E%3C/svg%3E"); /* Scoped here, not in :root — it has one user. The stroke color is throwaway: the mask keeps the alpha only. */
+    display: grid;
+    place-items: center;
+    min-inline-size: 2.75rem;
+    padding: 0; /* Drops the shared row padding — the hit area is the 2.75rem square itself. */
+  }
+  .menu-home::before {
+    content: "";
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    background: currentColor; /* The mask cuts the house out of this fill, so the icon inherits ink and inverts like text. */
+    -webkit-mask: var(--icon-home) center / contain no-repeat; /* Safari under 15.4 paints a solid square without the prefix. */
+    mask: var(--icon-home) center / contain no-repeat; /* 24 viewBox units at 1.5rem: stroke-width 2 lands at 0.125rem — the hamburger's bar thickness exactly. */
+  }
+  .menu-home[aria-current="page"] { border: 1px solid var(--ink-muted); background: var(--ink-wash); } /* Already home: wash plus a hairline edge — two cues, no hue (WCAG 1.4.1). --ink-muted, not --line: an interactive edge needs 3:1. */
+
+  .mobile-menu-close { /* Far edge of the toolbar row — mirrors where the hamburger was. */
     display: grid;
     place-items: center;
     min-inline-size: 2.75rem;
     min-block-size: 2.75rem;
-    align-self: flex-end;
     border-radius: var(--radius-sm);
     font-size: 1.5rem;
     line-height: 1;
