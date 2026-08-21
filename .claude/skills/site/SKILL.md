@@ -13,6 +13,7 @@ You are working on a monochrome MSP website. Static files, Cloudflare Pages, nea
 - **Hosting:** Cloudflare Pages via wrangler. Do not migrate to Workers.
 - **JS:** Vanilla only. No frameworks, no htmx, no Alpine. Ever.
 - **Design:** Black, white, and grays. No new colors. Glass effect stays on. No reduced-motion overrides.
+- **Content:** Lorem ipsum everywhere, on purpose. This phase is framework, structure, and layout patterns only. Do not write real copy or fill in real business data (names, phones, addresses, schema) until the owner says so.
 
 ## Who does what
 
