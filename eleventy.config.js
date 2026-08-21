@@ -5,6 +5,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/style.css");
   eleventyConfig.addPassthroughCopy("src/menu.js");
   eleventyConfig.addPassthroughCopy("src/_headers");
+  eleventyConfig.addPassthroughCopy("src/*.{ico,svg,png,jpg}"); // favicon, touch icon, og image
 
   eleventyConfig.addFilter("readableDate", d =>
     new Date(d).toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" }));
