@@ -1,26 +1,17 @@
 {
   "name": "css-site",
   "version": "1.0.0",
-  "description": "",
-  "main": "menu.js",
-  "directories": {
-    "doc": "docs"
-  },
+  "private": true,
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "eleventy",
+    "check": "eleventy && npx -y html-validate \"_site/**/*.html\" && npx -y csstree-validator src/style.css",
+    "deploy": "npx -y wrangler pages deploy _site --project-name css-html-t --branch main --commit-dirty=true"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nitrogoboom/css-html-t.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
-  "bugs": {
-    "url": "https://github.com/nitrogoboom/css-html-t/issues"
-  },
-  "homepage": "https://github.com/nitrogoboom/css-html-t#readme",
   "devDependencies": {
     "@11ty/eleventy": "^3.1.6",
     "@11ty/eleventy-plugin-rss": "^3.0.0"
