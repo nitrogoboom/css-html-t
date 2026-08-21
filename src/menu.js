@@ -1,6 +1,9 @@
 // Close the mobile popover when the viewport grows to desktop; CSS can't leave the top layer.
-// 64rem: keep in sync with style.css.
-matchMedia('(min-width: 64rem)').addEventListener('change', e => e.matches && document.getElementById('mobile-menu').hidePopover())
+// 64rem: keep in sync with style.css. Belt-and-suspenders: the MQL change event misses abrupt
+// viewport jumps (window snap, monitor unplug), so a plain resize listener backs it up.
+const closeMenuIfDesktop = () => matchMedia('(min-width: 64rem)').matches && document.getElementById('mobile-menu').hidePopover()
+matchMedia('(min-width: 64rem)').addEventListener('change', closeMenuIfDesktop)
+addEventListener('resize', closeMenuIfDesktop)
 
 // Desktop dropdowns: <details> has no built-in light dismiss, so close on outside click and Escape.
 const dropdowns = document.querySelectorAll('header nav details')

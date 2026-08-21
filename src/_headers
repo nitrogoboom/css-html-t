@@ -1,0 +1,7 @@
+# Cloudflare Pages headers. Assets are not filename-hashed, so cache short — never immutable.
+/style.css
+  Cache-Control: public, max-age=14400
+/menu.js
+  Cache-Control: public, max-age=14400
+/*
+  X-Content-Type-Options: nosniff

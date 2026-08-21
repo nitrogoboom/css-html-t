@@ -3,6 +3,7 @@ layout: base.njk
 title: Lorem — Company Name
 description: Company Name designs and builds fast, accessible websites for small businesses and independent professionals.
 ---
+{% from "parts.njk" import card %}
 <!-- hero: centered stack, h1 ≤ 8 words, lead ≤ 20 words, primary + ghost CTA -->
 <section class="hero" aria-labelledby="hero-title">
   <div class="intro">
@@ -57,21 +58,9 @@ description: Company Name designs and builds fast, accessible websites for small
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
     </div>
     <ul class="grid">
-      <li class="card">
-        <h3>Card one</h3>
-        <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-        <a class="arrow-link" href="#">Learn more<span class="visually-hidden"> about card one</span> &rarr;</a>
-      </li>
-      <li class="card">
-        <h3>Card two</h3>
-        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
-        <a class="arrow-link" href="#">Learn more<span class="visually-hidden"> about card two</span> &rarr;</a>
-      </li>
-      <li class="card">
-        <h3>Card three</h3>
-        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.</p>
-        <a class="arrow-link" href="#">Learn more<span class="visually-hidden"> about card three</span> &rarr;</a>
-      </li>
+      {%- for s in services %}{% if loop.index <= 3 %}
+      {{ card(s.title, s.lead, "/services/" + s.slug + "/") }}
+      {%- endif %}{% endfor %}
     </ul>
   </div>
 </section>

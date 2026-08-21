@@ -47,12 +47,12 @@ Before adding an element, fixing a bug, or picking a technique: check [docs/rese
 
 | Task | Read first |
 |---|---|
-| New page or template work | [docs/research/framework.md](../../../docs/research/framework.md), [docs/research/audit.md](../../../docs/research/audit.md) |
+| New page | Add a row to `src/_data/services.js`/`industries.js`, or a new `.njk` with `layout: base.njk` |
+| New blog post | Drop a `.md` in `src/posts/` with title/description/date front matter |
 | Layout, sizing, responsiveness | [docs/research/fluid-css.md](../../../docs/research/fluid-css.md) |
 | Page transitions | [docs/research/view-transitions.md](../../../docs/research/view-transitions.md) |
 | Colors, shadows, states | [docs/research/bw-design.md](../../../docs/research/bw-design.md) |
 | Any JS temptation | [docs/research/minimal-js.md](../../../docs/research/minimal-js.md) |
-| Blog / newsroom | [docs/research/blog.md](../../../docs/research/blog.md) |
 | Forms, opt-in, downloads | [docs/research/forms-cloudflare.md](../../../docs/research/forms-cloudflare.md) |
 | SEO, schema, AI crawlers | [docs/research/ai-ready.md](../../../docs/research/ai-ready.md) |
 | Speed, caching, a11y | [docs/research/perf-a11y.md](../../../docs/research/perf-a11y.md) |

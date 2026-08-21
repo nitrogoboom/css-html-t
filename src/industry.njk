@@ -1,0 +1,51 @@
+---
+layout: base.njk
+pagination:
+  data: industries
+  size: 1
+  alias: item
+permalink: "/industries/{{ item.slug }}/"
+eleventyComputed:
+  title: "{{ item.title }} — Company Name"
+  description: "{{ item.lead }}"
+---
+{% from "parts.njk" import card, cta %}
+<!-- Industry page pattern: intro, pain-point cards, split proof section, CTA. -->
+<section>
+  <div class="wrapper flow">
+    <div class="intro">
+      <p class="eyebrow">Industries</p>
+      <h1>{{ item.title }}</h1>
+      <p>{{ item.lead }}</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrapper flow">
+    <div class="intro">
+      <p class="eyebrow">Eyebrow</p>
+      <h2>Challenges we solve</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+    </div>
+    <ul class="grid">
+      {{ card("Challenge one", "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "#") }}
+      {{ card("Challenge two", "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.", "#") }}
+      {{ card("Challenge three", "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.", "#") }}
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrapper pair media-end">
+    <div class="media" aria-hidden="true"></div>
+    <div class="flow">
+      <p class="eyebrow">Eyebrow</p>
+      <h2>Why it matters here</h2>
+      <p>In reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat.</p>
+      <a class="arrow-link" href="#">Learn more &rarr;</a>
+    </div>
+  </div>
+</section>
+
+{{ cta() }}

@@ -1,0 +1,28 @@
+---
+layout: base.njk
+---
+<!-- Post layout: one article in a 66ch reading column. Markdown body renders into .flow. -->
+<!-- BlogPosting schema per post; frontmatter feeds it, same values as the meta tags. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": {{ title | dump | safe }},
+  "description": {{ description | dump | safe }},
+  "datePublished": "{{ page.date | htmlDateString }}",
+  "author": { "@type": "Organization", "name": "Company Name" },
+  "publisher": { "@type": "Organization", "name": "Company Name", "logo": { "@type": "ImageObject", "url": "https://example.com/icon.svg" } },
+  "mainEntityOfPage": "https://example.com{{ page.url }}"
+}
+</script>
+<section>
+  <article class="wrapper prose flow">
+    <div class="flow post-header">
+      <p class="eyebrow"><time datetime="{{ page.date | htmlDateString }}">{{ page.date | readableDate }}</time></p>
+      <h1>{{ title }}</h1>
+      <p class="post-lead">{{ description }}</p>
+    </div>
+    {{ content | safe }}
+    <p><a class="arrow-link" href="/newsroom/">&larr; Back to the Newsdesk</a></p>
+  </article>
+</section>

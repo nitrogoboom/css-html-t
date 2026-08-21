@@ -1,0 +1,25 @@
+---
+layout: base.njk
+title: Newsdesk — Company Name
+description: News, notes, and plain-language guides from Company Name.
+permalink: /newsroom/
+---
+<!-- Newsroom: intro + one card per post, newest first. Cards keep the 3-child subgrid contract. -->
+<section>
+  <div class="wrapper flow">
+    <div class="intro">
+      <p class="eyebrow">Newsdesk</p>
+      <h1>News and notes</h1>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+    </div>
+    <ul class="grid" style="--grid-cols: 3;">
+      {%- for post in collections.posts | reverse %}
+      <li class="card">
+        <h2 class="post-card-title">{{ post.data.title }}</h2>
+        <p><time datetime="{{ post.date | htmlDateString }}">{{ post.date | readableDate }}</time> &middot; {{ post.data.description }}</p>
+        <a class="arrow-link" href="{{ post.url }}">Read post<span class="visually-hidden">: {{ post.data.title }}</span> &rarr;</a>
+      </li>
+      {%- endfor %}
+    </ul>
+  </div>
+</section>

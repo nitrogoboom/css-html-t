@@ -1,0 +1,66 @@
+---
+layout: base.njk
+pagination:
+  data: services
+  size: 1
+  alias: item
+permalink: "/services/{{ item.slug }}/"
+eleventyComputed:
+  title: "{{ item.title }} — Company Name"
+  description: "{{ item.lead }}"
+---
+{% from "parts.njk" import card, faq, cta %}
+<!-- Service page pattern: answer-first intro, split detail, proof cards, FAQ, CTA. -->
+<section>
+  <div class="wrapper flow">
+    <div class="intro">
+      <p class="eyebrow">Managed Services</p>
+      <h1>{{ item.title }}</h1>
+      <p>{{ item.lead }}</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrapper pair">
+    <div class="media" aria-hidden="true"></div>
+    <div class="flow">
+      <p class="eyebrow">Eyebrow</p>
+      <h2>What you get</h2>
+      <p>Incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+      <a class="arrow-link" href="#">Learn more &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrapper flow">
+    <div class="intro">
+      <p class="eyebrow">Eyebrow</p>
+      <h2>How it works</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+    </div>
+    <ul class="grid">
+      {{ card("Step one", "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "#") }}
+      {{ card("Step two", "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.", "#") }}
+      {{ card("Step three", "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.", "#") }}
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrapper sidebar">
+    <div class="intro">
+      <p class="eyebrow">Eyebrow</p>
+      <h2>FAQ</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+    <div class="faq">
+      {{ faq("Question one: voluptatem quia voluptas sit aspernatur?", "Aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.") }}
+      {{ faq("Question two: neque porro quisquam est?", "Qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora.") }}
+      {{ faq("Question three: ut labore et dolore magnam aliquam?", "Quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit.") }}
+    </div>
+  </div>
+</section>
+
+{{ cta() }}

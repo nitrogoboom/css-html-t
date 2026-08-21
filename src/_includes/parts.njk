@@ -1,0 +1,31 @@
+{# Reusable HTML shapes. One-tag elements stay CSS classes; multi-tag repeats live here.
+   Import with: {% from "parts.njk" import card, faq, cta %} #}
+
+{# card: exactly 3 children (title, body, link) — the subgrid card contract in style.css. #}
+{% macro card(title, body, href) -%}
+<li class="card">
+  <h3>{{ title }}</h3>
+  <p>{{ body }}</p>
+  <a class="arrow-link" href="{{ href }}">Learn more<span class="visually-hidden"> about {{ title }}</span> &rarr;</a>
+</li>
+{%- endmacro %}
+
+{# faq: one question row. Same group name so opening one closes the others. #}
+{% macro faq(question, answer) -%}
+<details name="faq"><summary>{{ question }}</summary><p>{{ answer }}</p></details>
+{%- endmacro %}
+
+{# cta: the closing band. Must sit directly inside <main> (section padding rule). #}
+{% macro cta() -%}
+<section class="cta">
+  <div class="wrapper intro">
+    <h2>Call to action</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    <div class="row">
+      <a class="button" href="#">Lorem ipsum</a>
+      <a class="button" data-variant="ghost" href="#">Dolor sit</a>
+    </div>
+    <p><small>No credit card required.</small></p>
+  </div>
+</section>
+{%- endmacro %}

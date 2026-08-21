@@ -12,7 +12,7 @@
 <meta property="og:title" content="{{ title }}">
 <meta property="og:description" content="{{ description }}">
 <meta property="og:url" content="https://example.com{{ page.url }}">
-<meta property="og:type" content="website">
+<meta property="og:type" content="{{ ogType or "website" }}">
 <meta property="og:image" content="https://example.com/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -31,7 +31,8 @@
 { "prerender": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }] }
 </script>
 
-<!-- LocalBusiness structured data — Google requires image + address for the rich result.
+{% if page.url == "/" %}
+<!-- LocalBusiness structured data, homepage only — inner pages carry their own schema (posts: BlogPosting).
      Fill-in notes: swap "LocalBusiness" for the most specific subtype (ProfessionalService, Store, …);
      real geo needs 5+ decimals; add more openingHoursSpecification objects for weekend/split hours. -->
 <script type="application/ld+json">
@@ -68,6 +69,7 @@
   ]
 }
 </script>
+{% endif %}
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
