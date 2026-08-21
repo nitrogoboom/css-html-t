@@ -94,6 +94,8 @@ address { font-style: normal; }
 
 /* ── header ───────────────────────────────────────── */
 header {
+  position: relative; /* With z-index: keeps the dropdown panels above <main>, which view-transition-name promotes into its own paint layer. */
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
