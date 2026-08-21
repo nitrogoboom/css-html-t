@@ -114,8 +114,8 @@ header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
   header nav { position: relative; isolation: isolate; }
   header nav a { padding: 0.25rem clamp(0.5rem, 0.75vw, 0.75rem); }
   @supports (anchor-name: --x) { /* Browsers without anchor positioning still get the color change on hover, and no leftover pill box. */
-    header nav a:is(:hover, :focus-visible, [aria-current="page"]) { anchor-name: --nav-hover; }
-    header nav:has(a:is(:hover, :focus-visible)) a[aria-current="page"]:not(:hover, :focus-visible) { anchor-name: none; } /* While you hover any link, the current-page link gives up the pill. */
+    header nav :is(a, summary):is(:hover, :focus-visible), header nav a[aria-current="page"] { anchor-name: --nav-hover; } /* summary too: the dropdown toggles are summaries, not links. */
+    header nav:has(:is(a, summary):is(:hover, :focus-visible)) a[aria-current="page"]:not(:hover, :focus-visible) { anchor-name: none; } /* While you hover any link, the current-page link gives up the pill. */
     header nav::before {
       content: "";
       position: absolute;
@@ -129,7 +129,7 @@ header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
       background: var(--nav-pill);
       transition: inset-inline-start var(--motion), inline-size var(--motion), opacity var(--motion);
     }
-    header nav:not(:has(a:hover, a:focus-visible, a[aria-current="page"]))::before { opacity: 0; }
+    header nav:not(:has(a:hover, summary:hover, a:focus-visible, summary:focus-visible, a[aria-current="page"]))::before { opacity: 0; }
   }
 }
 
