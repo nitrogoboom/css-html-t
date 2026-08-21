@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "static",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "4173"],
+      "name": "site",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["@11ty/eleventy", "--serve", "--port", "4173"],
       "port": 4173
     }
   ]

@@ -1,0 +1,137 @@
+---
+layout: base.njk
+title: Lorem — Company Name
+description: Company Name designs and builds fast, accessible websites for small businesses and independent professionals.
+---
+<!-- hero: centered stack, h1 ≤ 8 words, lead ≤ 20 words, primary + ghost CTA -->
+<section class="hero" aria-labelledby="hero-title">
+  <div class="intro">
+    <h1 id="hero-title">Hero section</h1>
+    <p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <div class="row">
+      <a class="button" href="#">Lorem ipsum</a>
+      <a class="button" data-variant="ghost" href="#">Dolor sit</a>
+    </div>
+  </div>
+</section>
+
+<!-- logos: label + one muted row, wraps centered. Placeholder wordmarks are text; swap each <li> for <img alt="Name" width height> -->
+<section class="logos">
+  <h2>Logo strip &middot; trusted by</h2>
+  <ul class="row">
+    <li>Lorem</li><li>Ipsum</li><li>Dolor</li><li>Sit Amet</li><li>Consectetur</li><li>Adipiscing</li>
+  </ul>
+</section>
+
+<!-- pair: media + text, 50/50, stacks media-first. .media-end puts media on the right. -->
+<section>
+  <div class="wrapper pair">
+    <div class="media" aria-hidden="true"></div>
+    <div class="flow">
+      <p class="eyebrow">Eyebrow</p>
+      <h2>Split section, media left</h2>
+      <p>Incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+      <a class="arrow-link" href="#">Learn more about pair 1 &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrapper pair media-end">
+    <div class="media" aria-hidden="true"></div>
+    <div class="flow">
+      <p class="eyebrow">Eyebrow</p>
+      <h2>Split section, media right</h2>
+      <p>In reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat.</p>
+      <a class="arrow-link" href="#">Learn more about pair 2 &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- feature cards: centered intro, then equal cards; subgrid aligns title/body/link rows; whole card is the link's hit area -->
+<section>
+  <div class="wrapper flow">
+    <div class="intro">
+      <p class="eyebrow">Eyebrow</p>
+      <h2>Feature cards</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+    </div>
+    <ul class="grid">
+      <li class="card">
+        <h3>Card one</h3>
+        <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        <a class="arrow-link" href="#">Learn more<span class="visually-hidden"> about card one</span> &rarr;</a>
+      </li>
+      <li class="card">
+        <h3>Card two</h3>
+        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+        <a class="arrow-link" href="#">Learn more<span class="visually-hidden"> about card two</span> &rarr;</a>
+      </li>
+      <li class="card">
+        <h3>Card three</h3>
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.</p>
+        <a class="arrow-link" href="#">Learn more<span class="visually-hidden"> about card three</span> &rarr;</a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- testimonials: same grid + card; figure/blockquote/figcaption; attribution outside the quote, no <cite> for people -->
+<section>
+  <div class="wrapper flow">
+    <div class="intro">
+      <p class="eyebrow">Eyebrow</p>
+      <h2>Testimonials</h2>
+    </div>
+    <ul class="grid">
+      <li class="card">
+        <figure>
+          <blockquote><p>Mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium.</p></blockquote>
+          <figcaption><strong>Lorem Ipsum</strong> Dolor, Sit Amet Inc.</figcaption>
+        </figure>
+      </li>
+      <li class="card">
+        <figure>
+          <blockquote><p>Accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore.</p></blockquote>
+          <figcaption><strong>Sit Amet</strong> Consectetur, Adipiscing Ltd.</figcaption>
+        </figure>
+      </li>
+      <li class="card">
+        <figure>
+          <blockquote><p>Inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p></blockquote>
+          <figcaption><strong>Adipiscing Elit</strong> Eiusmod, Tempor Co.</figcaption>
+        </figure>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- faq: intro left, questions right (sidebar layout, stacks when narrow); native details, all closed, no heading inside summary -->
+<section>
+  <div class="wrapper sidebar">
+    <div class="intro">
+      <p class="eyebrow">Eyebrow</p>
+      <h2>FAQ</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+    <div class="faq">
+      <details name="faq"><summary>Question one: voluptatem quia voluptas sit aspernatur?</summary><p>Aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p></details>
+      <details name="faq"><summary>Question two: neque porro quisquam est?</summary><p>Qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora.</p></details>
+      <details name="faq"><summary>Question three: ut labore et dolore magnam aliquam?</summary><p>Quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit.</p></details>
+      <details name="faq"><summary>Question four: quis autem vel eum iure?</summary><p>Reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- call to action: centered stack on a tinted band; one primary, one ghost, one risk-reducer line -->
+<section class="cta">
+  <div class="wrapper intro">
+    <h2>Call to action</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    <div class="row">
+      <a class="button" href="#">Lorem ipsum</a>
+      <a class="button" data-variant="ghost" href="#">Dolor sit</a>
+    </div>
+    <p><small>No credit card required.</small></p>
+  </div>
+</section>

@@ -1,0 +1,31 @@
+<header>
+  <a class="brand" href="/">Lorem</a>
+
+  <button type="button" class="mobile-menu-button" popovertarget="mobile-menu" aria-label="Menu"><span></span></button>
+
+  <nav id="mobile-menu" popover aria-label="Main">
+    <button type="button" class="mobile-menu-close" popovertarget="mobile-menu" popovertargetaction="hide" aria-label="Close" autofocus>&times;</button>
+    <div class="menu-group">
+      {%- for section in nav.sections %}
+      <details name="nav">
+        <summary>{{ section.title }}</summary>
+        <div>
+          {%- for link in section.links %}
+          <a href="{{ link.url }}"{% if link.url == page.url %} aria-current="page"{% endif %}>{{ link.label }}</a>
+          {%- endfor %}
+        </div>
+      </details>
+      {%- endfor %}
+    </div>
+    <div class="menu-group">
+      {%- for link in nav.pages %}
+      <a href="{{ link.url }}"{% if link.url == page.url %} aria-current="page"{% endif %}>{{ link.label }}</a>
+      {%- endfor %}
+    </div>
+    <div class="menu-group">
+      <a class="menu-tel" href="tel:{{ nav.tel }}">{{ nav.telDisplay }}</a>
+      <a class="button" href="#">Contact Us</a>
+    </div>
+  </nav>
+</header>
+<button type="button" class="mobile-menu-fab" popovertarget="mobile-menu" aria-label="Menu"><span></span></button>

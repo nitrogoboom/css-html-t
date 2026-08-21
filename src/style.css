@@ -8,6 +8,19 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* ── page transitions ─────────────────────────────── */
+/* Cross-document view transitions: both pages carry this rule, so link clicks animate between them.
+   Chrome 126+ and Safari 18.2+ animate; Firefox just navigates normally — no fallback code needed. */
+@view-transition { navigation: auto; }
+header { view-transition-name: site-header; } /* Named chrome persists instead of cross-fading with the page. */
+footer { view-transition-name: site-footer; }
+main { view-transition-name: page-content; }
+.mobile-menu-fab { view-transition-name: menu-fab; } /* Fixed elements render under the snapshot layer unless named. */
+::view-transition-old(page-content) { animation: var(--motion) both page-leave; }
+::view-transition-new(page-content) { animation: var(--motion) both page-enter; }
+@keyframes page-leave { to { opacity: 0; translate: 0 -0.75rem; } }
+@keyframes page-enter { from { opacity: 0; translate: 0 0.75rem; } }
+
 /* Big-screen scaling. Font size stays at 100% up to a 1280px-wide window. Past that, the root font size grows,
    so the whole rem-based layout grows with it: 125% at 2560px, capped at 150% at 3840px.
    The rem and % values here come from the user's browser font setting, so their settings and zoom still work.

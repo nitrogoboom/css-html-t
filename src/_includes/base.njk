@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>{{ title }}</title>
+<meta name="description" content="{{ description }}">
+<link rel="canonical" href="https://example.com{{ page.url }}">
+
+<!-- Social sharing (FB, LinkedIn, iMessage, Slack); X falls back to og:* -->
+<meta property="og:title" content="{{ title }}">
+<meta property="og:description" content="{{ description }}">
+<meta property="og:url" content="https://example.com{{ page.url }}">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://example.com/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Company Name wordmark on a plain background.">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- Icons -->
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"><!-- 180x180 -->
+
+<link rel="stylesheet" href="/style.css">
+
+<!-- Prerender same-origin pages on hover (Chromium only; other browsers ignore this JSON, nothing executes). -->
+<script type="speculationrules">
+{ "prerender": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }] }
+</script>
+
+<!-- LocalBusiness structured data — Google requires image + address for the rich result.
+     Fill-in notes: swap "LocalBusiness" for the most specific subtype (ProfessionalService, Store, …);
+     real geo needs 5+ decimals; add more openingHoursSpecification objects for weekend/split hours. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Company Name",
+  "url": "https://example.com/",
+  "image": "https://example.com/og.jpg",
+  "logo": "https://example.com/icon.svg",
+  "telephone": "+1-555-555-5555",
+  "email": "hello@example.com",
+  "priceRange": "$$",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "123 Main Street",
+    "addressLocality": "Anytown",
+    "addressRegion": "ON",
+    "postalCode": "A1A 1A1",
+    "addressCountry": "CA"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 43.6532,
+    "longitude": -79.3832
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "09:00",
+      "closes": "17:00"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+{% include "nav.njk" %}
+
+<main id="main">
+{{ content | safe }}
+</main>
+
+{% include "footer.njk" %}
+
+<script src="/menu.js"></script>
+</body>
+</html>

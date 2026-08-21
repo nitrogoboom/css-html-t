@@ -9,7 +9,7 @@ You are working on a monochrome MSP website. Static files, Cloudflare Pages, nea
 
 ## The stack
 
-- **Build:** Eleventy + Nunjucks (until migrated: hand-written HTML). Markdown for blog posts.
+- **Build:** Eleventy + Nunjucks. Pages are `.njk` files in `src/`. Shared shell: `src/_includes/base.njk` + `nav.njk` + `footer.njk`. Nav/footer links: `src/_data/nav.json` (edit once, every page updates). Repeated HTML shapes become macros in `src/_includes/parts.njk`; one-tag elements stay CSS classes with `data-variant`. Markdown for blog posts.
 - **Hosting:** Cloudflare Pages via wrangler. Do not migrate to Workers.
 - **JS:** Vanilla only. No frameworks, no htmx, no Alpine. Ever.
 - **Design:** Black, white, and grays. No new colors. Glass effect stays on. No reduced-motion overrides.
@@ -33,10 +33,10 @@ Solve in this order. Stop at the first layer that works.
 
 ## Every change, every time
 
-1. Edit.
-2. Validate: `npx -y html-validate index.html && npx -y csstree-validator style.css` (extend to changed files). Both must pass.
-3. Check the browser preview at mobile, desktop, and a wide window.
-4. Commit, `git push origin main`, then `npx -y wrangler pages deploy . --project-name css-html-t --branch main --commit-dirty=true`.
+1. Edit files in `src/`.
+2. Build + validate: `npx @11ty/eleventy && npx -y html-validate "_site/**/*.html" && npx -y csstree-validator src/style.css`. All must pass.
+3. Check the browser preview (launch config `site`, port 4173) at mobile, desktop, and a wide window.
+4. Commit, `git push origin main`, then `npx -y wrangler pages deploy _site --project-name css-html-t --branch main --commit-dirty=true`.
 
 ## Research rule
 

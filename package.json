@@ -1,0 +1,27 @@
+{
+  "name": "css-site",
+  "version": "1.0.0",
+  "description": "",
+  "main": "menu.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nitrogoboom/css-html-t.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/nitrogoboom/css-html-t/issues"
+  },
+  "homepage": "https://github.com/nitrogoboom/css-html-t#readme",
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.6"
+  }
+}

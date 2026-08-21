@@ -1,0 +1,40 @@
+<!-- footer: brand column + link columns (count follows markup); legal row under a hairline -->
+<footer>
+  <div class="wrapper">
+    <div class="sidebar">
+      <div class="flow">
+        <a class="brand" href="/">Lorem</a>
+        <p>Footer brand column. One-line tagline about the company.</p>
+      </div>
+      <nav class="footer-links" aria-label="Footer links">
+        {%- for section in nav.sections %}
+        <div>
+          <h3>{{ section.title }}</h3>
+          <ul>
+            {%- for link in section.links %}
+            <li><a href="{{ link.url }}">{{ link.label }}</a></li>
+            {%- endfor %}
+          </ul>
+        </div>
+        {%- endfor %}
+        <div>
+          <h3>Company</h3>
+          <ul>
+            {%- for link in nav.pages %}
+            <li><a href="{{ link.url }}">{{ link.label }}</a></li>
+            {%- endfor %}
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Get in touch</h3>
+          <ul><li><a href="mailto:{{ nav.email }}">{{ nav.email }}</a></li><li><a href="tel:{{ nav.tel }}">{{ nav.telDisplay }}</a></li></ul>
+        </div>
+      </nav>
+    </div>
+    <div class="footer-legal row">
+      <small>&copy; 2026 Company Name</small>
+      <ul class="row"><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul>
+    </div>
+  </div>
+</footer>
