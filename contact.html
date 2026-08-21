@@ -71,12 +71,13 @@
   <button type="button" class="mobile-menu-button" popovertarget="mobile-menu" aria-label="Menu"><span></span></button>
 
   <nav id="mobile-menu" popover aria-label="Main">
-    <a href="index.html">Home</a>
-    <a href="contact.html" aria-current="page">Contact</a>
-    <button type="button" class="mobile-menu-close" popovertarget="mobile-menu" popovertargetaction="hide" aria-label="Close">&times;</button>
+    <button type="button" class="mobile-menu-close" popovertarget="mobile-menu" popovertargetaction="hide" aria-label="Close" autofocus>&times;</button>
+    <div class="menu-group">
+      <a href="index.html">Home</a>
+      <a href="contact.html" aria-current="page">Contact</a>
+    </div>
   </nav>
 </header>
-<button type="button" class="mobile-menu-fab" popovertarget="mobile-menu" aria-label="Menu"><span></span></button>
 
 <main id="main">
   <!-- page header: the inner-page pattern — plain section + .intro, no .hero height -->

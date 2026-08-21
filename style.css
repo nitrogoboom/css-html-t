@@ -1,10 +1,10 @@
-/* This stylesheet uses modern CSS only: clamp(), :has(), subgrid, anchor positioning, and the Popover API.
+/* This stylesheet uses modern CSS only: clamp(), :has(), subgrid, and the Popover API.
    Layout primitives, one job each: .wrapper .flow .grid .row .pair .sidebar .intro. Sections stretch edge to edge; text lines are capped at 60ch on each text element.
    Tuning: each primitive sets its defaults as custom properties (--row-justify, --row-align, --grid-cols, --grid-min, --pair-min, --sidebar-narrow, --sidebar-wide-min, --intro-align, --flow-space).
    Override one instance with an inline style attribute. If you repeat the same override, turn it into a modifier class (like .media-end). Use data-variant only for a fixed set of component looks (like .button).
    Naming: a name says what the thing is for, never a rank or size (--ink-muted, not --ink-2). A custom property only styles what its name says.
    Format: one space after each colon, no column alignment. A rule goes on one line only when it's short. Section banners are a label only, all the same width.
-   Mobile menu: the browser handles open, close, Escape, and click-outside. menu.js only closes the menu when the window grows to desktop size. */
+   Mobile menu: the browser handles open, close, Escape, and click-outside. menu.js closes the menu when the window grows to desktop size, and closes the desktop dropdowns on Escape or outside click. */
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -24,7 +24,7 @@ html { font-size: clamp(100%, 0.75rem + 0.3125vw, 150%); }
   --bg: #f8fafc;
   --bg-tint: #f4f5f7;
   --line: #9aa0ad; /* Thin border lines. Dark enough to stay visible on washed-out screens. */
-  --nav-pill: var(--line); /* Fill for the desktop nav hover pill. Reuses the border gray on purpose. */
+  --ink-wash: oklch(from var(--ink) l c h / 6%); /* Faint ink fill for hover states on nav items. */
   --accent: #0047ab; /* Cobalt blue. Placeholder accent for button hovers, link hovers, and the focus ring. */
   --motion: 0.25s ease;
   --radius-sm: 0.375rem;
@@ -84,9 +84,14 @@ header {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  position: sticky; /* Sticky glass header: the menu button stays reachable on long pages, so no floating button needed. */
+  inset-block-start: 0;
+  z-index: 1; /* Above the cards, which create their own stacking layers with position: relative. */
   min-block-size: 3.875rem;
   padding-inline: var(--gutter);
   border-block-end: 1px solid var(--line);
+  background: oklch(from var(--bg) l c h / 70%);
+  backdrop-filter: blur(0.75rem);
 }
 
 .brand { white-space: nowrap; font-size: 1.1em; font-weight: 700; letter-spacing: -0.02em; }
@@ -106,34 +111,31 @@ header nav {
   color: inherit;
   overflow: visible; /* The browser's default overflow: auto on popovers cuts off focus rings. */
 }
-header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
+footer a:hover, .faq summary:hover { color: var(--accent); }
 
-/* Desktop nav: a gray pill slides from link to link on hover, using anchor positioning.
-   No gap between links, so the pill can hand off smoothly from one link to the next. */
+/* Desktop nav: a 2px ink underline grows under the hovered or open item.
+   The open dropdown panel docks flush under the header's bottom border. */
 @media (width >= 64rem) {
-  header nav { position: relative; isolation: isolate; }
-  header nav a { padding: 0.25rem clamp(0.5rem, 0.75vw, 0.75rem); }
-  @supports (anchor-name: --x) { /* Browsers without anchor positioning still get the color change on hover, and no leftover pill box. */
-    header nav :is(a, summary):is(:hover, :focus-visible), header nav a[aria-current="page"] { anchor-name: --nav-hover; } /* summary too: the dropdown toggles are summaries, not links. */
-    header nav:has(:is(a, summary):is(:hover, :focus-visible)) a[aria-current="page"]:not(:hover, :focus-visible) { anchor-name: none; } /* While you hover any link, the current-page link gives up the pill. */
-    header nav::before {
-      content: "";
-      position: absolute;
-      position-anchor: --nav-hover;
-      inset-inline-start: anchor(start);
-      inset-block-start: anchor(start);
-      inline-size: anchor-size(inline);
-      block-size: anchor-size(block);
-      z-index: -1;
-      border-radius: var(--radius-sm);
-      background: var(--nav-pill);
-      transition: inset-inline-start var(--motion), inline-size var(--motion), opacity var(--motion);
-    }
-    header nav:not(:has(a:hover, summary:hover, a:focus-visible, summary:focus-visible, a[aria-current="page"]))::before { opacity: 0; }
+  header nav { position: relative; } /* Overrides the browser's default position: fixed on popovers, so the nav sits in the header row. */
+  .menu-group { display: contents; } /* Group wrappers only matter in the mobile drawer; here their links lay out as plain row items. */
+  header nav :is(.menu-group > a:not(.button), summary) { position: relative; padding: 1.25rem clamp(0.5rem, 0.75vw, 0.75rem); } /* Block padding stretches each item to the full header height, so the dropdown panel can dock against the header edge. */
+  header nav :is(.menu-group > a:not(.button), summary)::before {
+    content: "";
+    position: absolute;
+    inset-inline: clamp(0.5rem, 0.75vw, 0.75rem);
+    inset-block-end: 0;
+    block-size: 0.125rem;
+    background: var(--ink);
+    scale: 0 1;
+    transition: scale var(--motion);
   }
+  header nav :is(.menu-group > a:not(.button), summary):is(:hover, :focus-visible)::before,
+  header nav details[open] summary::before,
+  header nav a[aria-current="page"]::before { scale: 1 1; } /* Each page marks its own nav link with aria-current="page" for a persistent underline. */
+  header nav .button { margin-inline-start: 0.5rem; padding-block: 0.5rem; }
 }
 
-.mobile-menu-button, .mobile-menu-close, .mobile-menu-fab {
+.mobile-menu-button, .mobile-menu-close {
   display: none;
   border: 0;
   background: none;
@@ -144,51 +146,26 @@ header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
 
 /* ── mobile menu ──────────────────────────────────── */
 @media (width < 64rem) { /* 64rem: menu.js in index.html uses the same number. Change both together. */
-  .mobile-menu-button, .mobile-menu-fab { display: grid; place-items: center; min-inline-size: 2.75rem; min-block-size: 2.75rem; } /* 44px minimum tap target. */
-  :is(.mobile-menu-button, .mobile-menu-fab) span,
-  :is(.mobile-menu-button, .mobile-menu-fab) span::before,
-  :is(.mobile-menu-button, .mobile-menu-fab) span::after {
+  .mobile-menu-button { display: grid; place-items: center; min-inline-size: 2.75rem; min-block-size: 2.75rem; } /* 44px minimum tap target. */
+  .mobile-menu-button span,
+  .mobile-menu-button span::before,
+  .mobile-menu-button span::after {
     display: block;
     inline-size: 1.5rem;
     block-size: 0.125rem; /* rem, not px, so the bar thickness grows with the big-screen scaling like the rest of the icon. */
     background: currentColor;
     content: "";
   }
-  :is(.mobile-menu-button, .mobile-menu-fab) span::before { translate: 0 -0.5rem; }
-  :is(.mobile-menu-button, .mobile-menu-fab) span::after { translate: 0 0.375rem; }
-
-  body { padding-block-end: calc(var(--gutter) + 3rem + var(--stack)); } /* Extra bottom padding so the floating button never covers the last content. */
-
-  .mobile-menu-fab {
-    position: fixed;
-    inset-inline-end: var(--gutter);
-    inset-block-end: var(--gutter);
-    inline-size: 3rem;
-    block-size: 3rem;
-    z-index: 1; /* Above the cards, which create their own stacking layers with position: relative. */
-    border-radius: 50%;
-    background: var(--ink);
-    color: var(--bg);
-    box-shadow: var(--shadow-sm);
-  }
-  @supports (animation-timeline: scroll()) { /* Browsers without scroll-driven animations just show the button all the time. */
-    .mobile-menu-fab {
-      animation: mobile-menu-fab-reveal linear both; /* Hidden at the top of the page; fades in as the header scrolls away. */
-      animation-timeline: scroll();
-      animation-range: 0 5rem;
-    }
-    @keyframes mobile-menu-fab-reveal {
-      from { opacity: 0; scale: 0.8; pointer-events: none; }
-      to { opacity: 1; scale: 1; }
-    }
-  }
+  .mobile-menu-button span::before { translate: 0 -0.5rem; }
+  .mobile-menu-button span::after { translate: 0 0.375rem; }
 
   /* Open menu: a panel slides in from the right edge. */
   header nav {
     display: none;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: stretch; /* Full-width rows. Overrides the base rule's align-items: center, which would center every row. */
     gap: 0.25rem;
+    font-size: 1rem; /* Drawer rows read at body size; the 0.9rem base is a desktop-bar size. */
     position: fixed;
     inset-block: 0;
     inset-inline: auto -100%; /* Parked fully off-screen. Moved with inset, not translate, so resizing to desktop while open skips the slide-out animation. */
@@ -203,8 +180,18 @@ header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
   }
   header nav:popover-open { display: flex; inset-inline-end: 0; }
   body:has(header nav:popover-open) { overflow: hidden; } /* Popovers don't stop the page from scrolling, so do it here. */
-  header nav a { padding: 0.75rem 0; font-size: 1.15em; } /* Makes each link about 44px tall to tap. */
-  header nav > :first-child { margin-block-start: auto; } /* :first-child, not a:first-child: the first item is now the Managed Services dropdown. */ /* Pushes links to the bottom when there's room; the panel scrolls when there isn't. */
+  .menu-group { display: grid; }
+  .menu-group + .menu-group { margin-block-start: 1.5rem; } /* A clear rhythm break between the section, page, and contact groups. */
+  header nav > .menu-group:first-of-type { margin-block-start: auto; } /* Pushes the groups to the bottom (thumb reach) when there's room; the panel scrolls when there isn't. */
+  header nav :is(a, summary) { display: flex; align-items: center; min-block-size: 2.75rem; padding: 0.625rem 0.5rem; border-radius: var(--radius-sm); } /* Full-width rows: the whole strip is tappable, and min-block-size guarantees the 44px target at any font scale. */
+  header nav :is(a, summary):hover { background: var(--ink-wash); }
+  header nav summary { justify-content: space-between; font-weight: 600; } /* Section toggles: bold, chevron pushed to the far edge. */
+  header nav .menu-group > a:not(.button, .menu-tel) { font-weight: 500; }
+  header nav details > div { padding-inline-start: 0.75rem; } /* Indents the section's links under their toggle. */
+  header nav details > div a { min-block-size: 2.5rem; font-size: 0.95em; color: var(--ink-muted); }
+  header nav details > div a:hover { background: none; color: var(--ink); }
+  .menu-tel { font-size: 0.95em; color: var(--ink-muted); }
+  header nav .button { display: flex; justify-content: center; margin-block-start: 0.5rem; } /* Contact is the one filled CTA in the panel. */
 
   header nav::backdrop {
     background: #0000;
@@ -216,40 +203,50 @@ header nav a:hover, footer a:hover, .faq summary:hover { color: var(--accent); }
     header nav:popover-open::backdrop { background: #0000; }
   }
 
-  .mobile-menu-close {
+  .mobile-menu-close { /* First child of the panel, pinned top-right — mirrors where the hamburger was. */
     display: grid;
     place-items: center;
     min-inline-size: 2.75rem;
     min-block-size: 2.75rem;
-    margin-block-start: var(--stack);
-    font-size: 2rem;
+    align-self: flex-end;
+    border-radius: var(--radius-sm);
+    font-size: 1.5rem;
     line-height: 1;
   }
+  .mobile-menu-close:hover { background: var(--ink-wash); }
 }
 
 /* ── nav dropdown ─────────────────────────────────── */
-header nav summary { cursor: pointer; list-style: none; }
+header nav summary { display: flex; align-items: center; gap: 0.375rem; cursor: pointer; list-style: none; }
 header nav details > div { display: grid; }
-header nav summary::after { content: " +"; color: var(--ink-muted); }
-header nav details[open] summary::after { content: " \2212"; } /* minus sign */
+header nav summary::after { /* Chevron, drawn from two borders. Rotates to point up when open. */
+  content: "";
+  inline-size: 0.4rem;
+  block-size: 0.4rem;
+  border-inline-end: 0.09375rem solid var(--ink-muted);
+  border-block-end: 0.09375rem solid var(--ink-muted);
+  rotate: 45deg;
+  translate: 0 -0.125rem;
+  transition: rotate var(--motion), translate var(--motion);
+}
+header nav details[open] summary::after { rotate: 225deg; translate: 0 0.125rem; }
 @media (width >= 64rem) {
   header nav details { position: relative; }
-  header nav summary { padding: 0.25rem clamp(0.5rem, 0.75vw, 0.75rem); }
   header nav details > div {
     position: absolute;
     inset-block-start: 100%;
     inset-inline-start: 0;
-    min-inline-size: max-content;
+    min-inline-size: max(100%, 14rem);
     padding: 0.5rem;
+    gap: 0.125rem;
     border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
+    border-block-start: 0; /* The header's own bottom border caps the panel, so it reads as docked to the bar. */
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
     background: var(--bg);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-lg);
   }
-}
-@media (width < 64rem) {
-  header nav details { text-align: end; }
-  header nav summary { padding: 0.75rem 0; font-size: 1.15em; } /* Same tap size as the links around it. */
+  header nav details > div a { padding: 0.5rem 0.625rem; border-radius: var(--radius-sm); }
+  header nav details > div a:hover { background: var(--ink-wash); }
 }
 
 /* ── layout primitives ────────────────────────────── */
