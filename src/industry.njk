@@ -6,7 +6,7 @@ pagination:
   alias: item
 permalink: "/industries/{{ item.slug }}/"
 eleventyComputed:
-  title: "{{ item.title }} — Company Name"
+  title: "{{ item.title }}"
   description: "{{ item.lead }}"
 ---
 {% from "parts.njk" import card, cta %}

@@ -5,6 +5,9 @@ const closeMenuIfDesktop = () => matchMedia('(min-width: 64rem)').matches && doc
 matchMedia('(min-width: 64rem)').addEventListener('change', closeMenuIfDesktop)
 addEventListener('resize', closeMenuIfDesktop)
 
+// A skipped cross-document view transition rejects its ready promise; swallow the expected noise.
+addEventListener('pagereveal', e => e.viewTransition?.ready.catch(() => {}))
+
 // Desktop dropdowns: <details> has no built-in light dismiss, so close on outside click and Escape.
 const dropdowns = document.querySelectorAll('header nav details')
 document.addEventListener('click', e => dropdowns.forEach(d => d.open && !d.contains(e.target) && (d.open = false)))

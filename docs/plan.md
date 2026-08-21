@@ -21,6 +21,11 @@ The scoped outlook for this site. Research notes live in [research/](research/).
 - A blog post = one `.md` file in `src/posts/`. List page, feed, and layout come free.
 - Repeated HTML shapes are macros in `src/_includes/parts.njk` (card, faq, cta).
 
+## Owner decisions pending (from the UX review)
+
+- **Desktop bar shows both a tel link and a Contact button.** Reviewer's take: two CTAs dilute each other; drop tel from the desktop bar, keep it in the drawer and footer. Reversible — owner's call.
+- **Breadcrumbs at 15 pages?** Underline says what's active, not where you are. ~10 lines of Nunjucks if wanted.
+
 ## Remaining work (in order)
 
 1. **Real content pass** — when the owner says so: business name, copy, JSON-LD → `ProfessionalService`, real domain in canonical/OG/feed URLs. Everything is lorem until then, on purpose.
