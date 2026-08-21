@@ -36,6 +36,7 @@ Eleventy + Nunjucks, static output, Cloudflare Pages. Monochrome (ink/paper/gray
 - Browser measurements from hidden/throttled tabs lie (transitions stall, scroll timelines don't attach) — verify in a fronted tab before calling something a bug.
 - Selector lists lose specificity fights silently — fold lit states into one `:is()` sharing the base selector's weight.
 - Breakers work in isolated tabs, one surface each; `elementFromPoint` is paint truth.
+- View-transition snapshots default to width-fills/height-follows — right for wide text; the `height: 100%` aspect-ratio fix is for images, don't cargo-cult it onto titles.
 
 ## Where things live
 
