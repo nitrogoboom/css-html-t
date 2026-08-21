@@ -84,14 +84,9 @@ header {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  position: sticky; /* Sticky glass header: the menu button stays reachable on long pages, so no floating button needed. */
-  inset-block-start: 0;
-  z-index: 1; /* Above the cards, which create their own stacking layers with position: relative. */
   min-block-size: 3.875rem;
   padding-inline: var(--gutter);
   border-block-end: 1px solid var(--line);
-  background: oklch(from var(--bg) l c h / 70%);
-  backdrop-filter: blur(0.75rem);
 }
 
 .brand { white-space: nowrap; font-size: 1.1em; font-weight: 700; letter-spacing: -0.02em; }
@@ -135,7 +130,7 @@ footer a:hover, .faq summary:hover { color: var(--accent); }
   header nav .button { margin-inline-start: 0.5rem; padding-block: 0.5rem; }
 }
 
-.mobile-menu-button, .mobile-menu-close {
+.mobile-menu-button, .mobile-menu-close, .mobile-menu-fab {
   display: none;
   border: 0;
   background: none;
@@ -146,18 +141,44 @@ footer a:hover, .faq summary:hover { color: var(--accent); }
 
 /* ── mobile menu ──────────────────────────────────── */
 @media (width < 64rem) { /* 64rem: menu.js in index.html uses the same number. Change both together. */
-  .mobile-menu-button { display: grid; place-items: center; min-inline-size: 2.75rem; min-block-size: 2.75rem; } /* 44px minimum tap target. */
-  .mobile-menu-button span,
-  .mobile-menu-button span::before,
-  .mobile-menu-button span::after {
+  .mobile-menu-button, .mobile-menu-fab { display: grid; place-items: center; min-inline-size: 2.75rem; min-block-size: 2.75rem; } /* 44px minimum tap target. */
+  :is(.mobile-menu-button, .mobile-menu-fab) span,
+  :is(.mobile-menu-button, .mobile-menu-fab) span::before,
+  :is(.mobile-menu-button, .mobile-menu-fab) span::after {
     display: block;
     inline-size: 1.5rem;
     block-size: 0.125rem; /* rem, not px, so the bar thickness grows with the big-screen scaling like the rest of the icon. */
     background: currentColor;
     content: "";
   }
-  .mobile-menu-button span::before { translate: 0 -0.5rem; }
-  .mobile-menu-button span::after { translate: 0 0.375rem; }
+  :is(.mobile-menu-button, .mobile-menu-fab) span::before { translate: 0 -0.5rem; }
+  :is(.mobile-menu-button, .mobile-menu-fab) span::after { translate: 0 0.375rem; }
+
+  body { padding-block-end: calc(var(--gutter) + 3rem + var(--stack)); } /* Extra bottom padding so the floating button never covers the last content. */
+
+  .mobile-menu-fab {
+    position: fixed;
+    inset-inline-end: var(--gutter);
+    inset-block-end: var(--gutter);
+    inline-size: 3rem;
+    block-size: 3rem;
+    z-index: 1; /* Above the cards, which create their own stacking layers with position: relative. */
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--bg);
+    box-shadow: var(--shadow-sm);
+  }
+  @supports (animation-timeline: scroll()) { /* Browsers without scroll-driven animations just show the button all the time. */
+    .mobile-menu-fab {
+      animation: mobile-menu-fab-reveal linear both; /* Hidden at the top of the page; fades in as the header scrolls away. */
+      animation-timeline: scroll();
+      animation-range: 0 5rem;
+    }
+    @keyframes mobile-menu-fab-reveal {
+      from { opacity: 0; scale: 0.8; visibility: hidden; pointer-events: none; } /* visibility too: keeps the hidden button out of the keyboard tab order. */
+      to { opacity: 1; scale: 1; visibility: visible; }
+    }
+  }
 
   /* Open menu: a panel slides in from the right edge. */
   header nav {
