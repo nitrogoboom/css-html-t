@@ -8,19 +8,18 @@ addEventListener('resize', closeMenuIfDesktop)
 // A skipped cross-document view transition rejects its ready promise; swallow the expected noise.
 addEventListener('pagereveal', e => e.viewTransition?.ready.catch(() => {}))
 
-// A fast tap that light-dismisses the mobile nav is really two events: the dismiss, then a click that
-// still lands where the finger came down. CSS (main/footer pointer-events:none while the popover is open)
-// stops that click while the panel is open, but a quick second tap in the same spot arrives just after
-// close, once the page underneath is normal again -- nothing left to block it. Swallow one click right
-// after close so that trailing tap can't activate whatever was under the panel.
+// A fast tap that light-dismisses the mobile nav fires pointerdown (which closes the popover, per spec)
+// and click (which lands on whatever's under the finger) in the same gesture. CSS blocks that click while
+// the popover is still open, but light-dismiss can close it between pointerdown and click, so the click
+// arrives after the page underneath is already normal again -- nothing left to block it. Note at
+// pointerdown whether the popover was open; if so, swallow the click that follows.
 const mobileMenu = document.getElementById('mobile-menu')
-const swallowTrailingClick = e => { e.preventDefault(); e.stopPropagation() }
-mobileMenu.addEventListener('toggle', e => {
-  if (e.newState === 'closed') {
-    document.addEventListener('click', swallowTrailingClick, { capture: true, once: true })
-    setTimeout(() => document.removeEventListener('click', swallowTrailingClick, true), 300)
-  }
-})
+let dismissing = false
+document.addEventListener('pointerdown', () => { dismissing = mobileMenu.matches(':popover-open') }, true)
+document.addEventListener('click', e => {
+  if (dismissing && !mobileMenu.contains(e.target)) { e.preventDefault(); e.stopPropagation() }
+  dismissing = false
+}, true)
 
 // Desktop dropdowns: <details> has no built-in light dismiss, so close on outside click and Escape.
 const dropdowns = document.querySelectorAll('header nav details')
