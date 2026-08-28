@@ -8,14 +8,6 @@ addEventListener('resize', closeMenuIfDesktop)
 // A skipped cross-document view transition rejects its ready promise; swallow the expected noise.
 addEventListener('pagereveal', e => e.viewTransition?.ready.catch(() => {}))
 
-// Popover light-dismiss (pointerdown/pointerup, independent of this click event) closes the mobile nav on
-// a backdrop click, but the click itself still lands on whatever's behind the backdrop and activates it
-// (the ::backdrop isn't a real element clicks stop at). Block just that one click's default action.
-const mobileMenu = document.getElementById('mobile-menu')
-document.addEventListener('click', e => {
-  if (mobileMenu.matches(':popover-open') && !mobileMenu.contains(e.target)) e.preventDefault()
-}, true)
-
 // Desktop dropdowns: <details> has no built-in light dismiss, so close on outside click and Escape.
 const dropdowns = document.querySelectorAll('header nav details')
 document.addEventListener('click', e => dropdowns.forEach(d => d.open && !d.contains(e.target) && (d.open = false)))
