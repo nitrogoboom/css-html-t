@@ -57,7 +57,7 @@ body {
   overflow-wrap: anywhere;
 }
 
-img, picture, video, svg { display: block; max-inline-size: 100%; }
+img, picture, video, svg { display: block; max-inline-size: 100%; block-size: auto; }
 a { color: inherit; text-decoration: none; }
 :focus-visible { outline: 0.125rem solid var(--accent); outline-offset: 0.125rem; } /* rem, not px, so the focus ring grows with the big-screen scaling. */
 h1, h2, h3, p, figure, blockquote { margin: 0; } /* No default margins. Spacing comes from .flow and gap instead. */
