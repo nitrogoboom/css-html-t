@@ -5,6 +5,11 @@
 
   <nav id="mobile-menu" popover aria-label="Main">
     <button type="button" class="mobile-menu-close" popovertarget="mobile-menu" popovertargetaction="hide" aria-label="Close" autofocus>&times;</button>
+    <div class="menu-group menu-group-home">
+      <a href="/"{% if page.url == '/' %} aria-current="page"{% endif %}>
+        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.2 12 3l9 7.2V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home
+      </a>
+    </div>
     <div class="menu-group">
       {%- for section in nav.sections %}
       <details name="nav">

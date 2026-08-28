@@ -137,6 +137,7 @@ footer a:hover { text-decoration: underline; } /* Color alone can't signal the h
   }
   header nav :is(.menu-group > a:not(.button), summary):is(:hover, :focus-visible, [aria-current="page"], details[open] > summary, details:has(a[aria-current="page"]) > summary)::before { scale: 1 1; } /* One :is() holds every lit state so it always outranks the base rule above — separate lower-specificity selectors silently lose to it. The :has() arm lights the dropdown's summary, since the current link itself hides inside a closed dropdown. */
   header nav .button { margin-inline-start: 0.5rem; padding-block: 0.5rem; }
+  .menu-group-home { display: none; } /* The brand wordmark sits in this bar and already links home. */
 }
 
 .mobile-menu-button, .mobile-menu-close, .mobile-menu-fab {
@@ -218,6 +219,9 @@ footer a:hover { text-decoration: underline; } /* Color alone can't signal the h
   header nav :is(a, summary):hover { background: var(--ink-wash); }
   header nav summary { justify-content: space-between; font-weight: 600; } /* Section toggles: bold, chevron pushed to the far edge. */
   header nav .menu-group > a:not(.button, .menu-tel) { font-weight: 500; }
+  .menu-group-home { padding-block-end: 1.5rem; border-block-end: 1px solid var(--line); } /* Hairline says "destination, not a section" without a label or heading. */
+  header nav .menu-icon { flex: none; inline-size: 1.125rem; block-size: 1.125rem; margin-inline-end: 0.625rem; color: var(--ink-muted); } /* 18px: stroke-width 2 on a 24 viewBox lands at 1.5px, matching the nav chevron. flex: none stops the global svg reset squashing it when the label wraps at 200% zoom. */
+  header nav a:is(:hover, [aria-current="page"]) .menu-icon { color: var(--accent); }
   header nav details > div { padding-inline-start: 0.75rem; } /* Indents the section's links under their toggle. */
   header nav details > div a { min-block-size: 2.5rem; color: var(--ink-muted); } /* Full 1em: interactive text keeps the 16px floor; color alone de-emphasizes. */
   header nav details > div a:hover { background: none; color: var(--ink); }
