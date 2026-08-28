@@ -18,7 +18,7 @@
    The rem and % values here come from the user's browser font setting, so their settings and zoom still work.
    The clamp() values on individual elements handle 320px to 1370px. This rule handles everything wider. */
 html { font-size: clamp(100%, 0.75rem + 0.3125vw, 150%); }
-@media (min-device-width: 3000px) { /* A 4K screen at 100% OS scaling makes text tiny. Raise the minimum so small windows stay readable. device-width measures the screen, not the window. Scaled monitors report under 3000px, so they skip this. The query is deprecated, but the spec says browsers must keep supporting it. */
+@media (min-width: 3000px) and (min-resolution: 1x) { /* A 4K screen at 100% OS scaling makes text tiny. min-resolution: 1x excludes scaled monitors, which report a lower CSS width even on a 4K panel, so they skip this. (device-width was dropped from the spec — this is the current replacement.) */
   html { font-size: clamp(125%, 0.75rem + 0.3125vw, 150%); }
 }
 @media print { html { font-size: 100%; } } /* Firefox makes vw units huge when printing (bug 1622017), so use a plain size for print. */
@@ -45,8 +45,10 @@ html { font-size: clamp(100%, 0.75rem + 0.3125vw, 150%); }
 
   --font-small: 0.875rem;
 
-  interpolate-size: allow-keywords; /* Lets height animate to auto (used by the FAQ open animation). */
+}
 
+@supports (interpolate-size: allow-keywords) {
+  :root { interpolate-size: allow-keywords; } /* Lets height animate to auto (used by the FAQ open animation). Chromium-only; unsupported browsers just open instantly. */
 }
 
 body {
