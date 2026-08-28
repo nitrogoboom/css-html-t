@@ -4,7 +4,7 @@
    Override one instance with an inline style attribute. If you repeat the same override, turn it into a modifier class (like .media-end). Use data-variant only for a fixed set of component looks (like .button).
    Naming: a name says what the thing is for, never a rank or size (--ink-muted, not --ink-2). A custom property only styles what its name says.
    Format: one space after each colon, no column alignment. A rule goes on one line only when it's short. Section banners are a label only, all the same width.
-   Mobile menu: the browser handles open, close, Escape, and click-outside. menu.js closes the menu when the window grows to desktop size, and closes the desktop dropdowns on Escape or outside click. */
+   Mobile menu: the browser handles open, close, Escape, and click-outside. menu.js closes the menu when the window grows to desktop size, closes the desktop dropdowns on Escape or outside click, and swallows the click that light-dismiss leaves behind. */
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -210,7 +210,7 @@ footer a:hover { text-decoration: underline; } /* Color alone can't signal the h
   }
   header nav:popover-open { display: flex; inset-inline-end: 0; }
   body:has(header nav:popover-open) { overflow: hidden; } /* Popovers don't stop the page from scrolling, so do it here. */
-  body:has(header nav:popover-open) > :is(main, footer) { pointer-events: none; } /* The backdrop's pointer-events: none is forced by the UA stylesheet (so light-dismiss keeps working) and can't be overridden — clicks fall through it to whatever's behind. Blocking main/footer themselves stops that; header stays clickable for the close button. */
+  body:has(header nav:popover-open) > :is(main, footer) { pointer-events: none; } /* The backdrop's pointer-events: none is forced by the UA stylesheet (so light-dismiss keeps working) and can't be overridden — clicks fall through it to whatever's behind. Blocking main/footer themselves stops that; header stays clickable for the close button. Half the fix: light-dismiss can close the popover between pointerdown and click, so the click lands after this rule stops applying — menu.js swallows that one. */
   .menu-group { display: grid; }
   .menu-group + .menu-group { margin-block-start: 1.5rem; } /* A clear rhythm break between the section, page, and contact groups. */
   header nav > .menu-group:first-of-type { margin-block-start: auto; } /* Pushes the groups to the bottom (thumb reach) when there's room; the panel scrolls when there isn't. */
