@@ -210,6 +210,7 @@ footer a:hover { text-decoration: underline; } /* Color alone can't signal the h
   }
   header nav:popover-open { display: flex; inset-inline-end: 0; }
   body:has(header nav:popover-open) { overflow: hidden; } /* Popovers don't stop the page from scrolling, so do it here. */
+  body:has(header nav:popover-open) > :is(main, footer) { pointer-events: none; } /* The backdrop's pointer-events: none is forced by the UA stylesheet (so light-dismiss keeps working) and can't be overridden — clicks fall through it to whatever's behind. Blocking main/footer themselves stops that; header stays clickable for the close button. */
   .menu-group { display: grid; }
   .menu-group + .menu-group { margin-block-start: 1.5rem; } /* A clear rhythm break between the section, page, and contact groups. */
   header nav > .menu-group:first-of-type { margin-block-start: auto; } /* Pushes the groups to the bottom (thumb reach) when there's room; the panel scrolls when there isn't. */
